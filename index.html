@@ -386,16 +386,26 @@
             <section class="page" id="page-subscriptions">
                 <div class="page-header">
                     <button class="back-btn" data-page="home"><i class="fas fa-arrow-left"></i></button>
-                    <h2>My Subscriptions</h2>
+                    <h2>Push Notifications</h2>
                 </div>
                 <div class="page-content">
+                    <!-- Permission Status Banner -->
+                    <div id="notificationPermission">
+                        <!-- Populated by JS -->
+                    </div>
+                    
                     <p class="subscriptions-intro">Choose which notifications you'd like to receive:</p>
+                    
                     <div class="subscriptions-list" id="subscriptionsList">
                         <!-- Populated by JS -->
                     </div>
-                    <button class="btn btn-primary save-subscriptions" id="saveSubscriptions">
-                        <i class="fas fa-save"></i> Save Preferences
-                    </button>
+                    
+                    <div class="subscription-footer">
+                        <p class="subscription-note">
+                            <i class="fas fa-info-circle"></i>
+                            Emergency alerts are always enabled to keep you informed of critical school announcements.
+                        </p>
+                    </div>
                 </div>
             </section>
         </main>
@@ -444,6 +454,7 @@
     </div>
 
     <script src="js/ics-calendar.js"></script>
+    <script src="js/push-notifications.js"></script>
     <script src="js/app.js"></script>
 </body>
 </html>

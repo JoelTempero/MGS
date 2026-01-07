@@ -2040,3 +2040,170 @@ img {
     background: var(--accent);
     border-radius: 50%;
 }
+
+/* ===== Push Notification Styles ===== */
+.permission-banner {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    padding: var(--space-lg);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--space-lg);
+}
+
+.permission-banner i {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+.permission-banner div {
+    flex: 1;
+}
+
+.permission-banner strong {
+    display: block;
+    margin-bottom: var(--space-xs);
+}
+
+.permission-banner p {
+    font-size: 0.85rem;
+    margin: 0;
+    opacity: 0.9;
+}
+
+.permission-banner.prompt {
+    background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+    color: #1565c0;
+}
+
+.permission-banner.enabled {
+    background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+    color: #2e7d32;
+}
+
+.permission-banner.denied {
+    background: linear-gradient(135deg, #ffebee, #ffcdd2);
+    color: #c62828;
+}
+
+.permission-banner.unsupported {
+    background: linear-gradient(135deg, #fff3e0, #ffe0b2);
+    color: #e65100;
+}
+
+.enable-notifications-btn,
+.test-notification-btn {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: var(--space-sm) var(--space-lg);
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.2s, transform 0.1s;
+}
+
+.enable-notifications-btn:hover,
+.test-notification-btn:hover {
+    background: var(--primary-light);
+    transform: scale(1.02);
+}
+
+.test-notification-btn {
+    background: transparent;
+    color: var(--success);
+    border: 1px solid var(--success);
+    padding: var(--space-xs) var(--space-md);
+    font-size: 0.85rem;
+}
+
+.test-notification-btn:hover {
+    background: var(--success);
+    color: white;
+}
+
+/* Subscription item with icon */
+.subscription-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    padding: var(--space-md);
+    background: var(--off-white);
+    border-radius: var(--radius-sm);
+    margin-bottom: var(--space-sm);
+    transition: background 0.2s;
+}
+
+.subscription-item:hover {
+    background: var(--light-gray);
+}
+
+.subscription-item.required {
+    background: linear-gradient(135deg, #ffebee, #fff);
+    border: 1px solid #ffcdd2;
+}
+
+.subscription-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+}
+
+.subscription-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.subscription-info h4 {
+    font-size: 0.95rem;
+    margin-bottom: var(--space-xs);
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.subscription-info p {
+    font-size: 0.8rem;
+    color: var(--dark-gray);
+    margin: 0;
+}
+
+.required-badge {
+    font-size: 0.65rem;
+    background: var(--accent);
+    color: white;
+    padding: 2px 6px;
+    border-radius: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.toggle-switch.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.subscription-footer {
+    margin-top: var(--space-lg);
+    padding-top: var(--space-lg);
+    border-top: 1px solid var(--light-gray);
+}
+
+.subscription-note {
+    font-size: 0.85rem;
+    color: var(--dark-gray);
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-sm);
+}
+
+.subscription-note i {
+    color: var(--primary);
+    margin-top: 2px;
+}

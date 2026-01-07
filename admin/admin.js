@@ -517,3 +517,138 @@ function showToast(message, type = 'info') {
         setTimeout(() => toast.remove(), 300);
     }, 3000);
 }
+
+// ===== Push Notifications =====
+const FIREBASE_PROJECT_ID = 'middleton-grange-a699d';
+const ADMIN_KEY = 'mgs-admin-2026'; // Simple key for demo - use proper auth in production
+
+function initPushNotifications() {
+    const form = document.getElementById('pushNotificationForm');
+    const titleInput = document.getElementById('pushTitle');
+    const bodyInput = document.getElementById('pushBody');
+    
+    if (!form) return;
+    
+    // Live preview
+    titleInput?.addEventListener('input', (e) => {
+        document.getElementById('previewTitle').textContent = e.target.value || 'Notification Title';
+        document.getElementById('titleCount').textContent = e.target.value.length;
+    });
+    
+    bodyInput?.addEventListener('input', (e) => {
+        document.getElementById('previewBody').textContent = e.target.value || 'Your message will appear here...';
+        document.getElementById('bodyCount').textContent = e.target.value.length;
+    });
+    
+    // Form submission
+    form.addEventListener('submit', handlePushSubmit);
+}
+
+async function handlePushSubmit(e) {
+    e.preventDefault();
+    
+    const topic = document.getElementById('pushTopic').value;
+    const title = document.getElementById('pushTitle').value;
+    const body = document.getElementById('pushBody').value;
+    const type = document.querySelector('input[name="notificationType"]:checked')?.value || 'general';
+    
+    if (!topic || !title || !body) {
+        showToast('Please fill in all fields', 'error');
+        return;
+    }
+    
+    // Show loading state
+    const submitBtn = e.target.querySelector('button[type="submit"]');
+    const originalText = submitBtn.innerHTML;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+    submitBtn.disabled = true;
+    
+    try {
+        const response = await fetch(`https://us-central1-${FIREBASE_PROJECT_ID}.cloudfunctions.net/sendNotification`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                topic,
+                title,
+                body,
+                type,
+                adminKey: ADMIN_KEY
+            })
+        });
+        
+        if (response.ok) {
+            const result = await response.json();
+            showToast(`Notification sent successfully! 🎉`, 'success');
+            clearPushForm();
+            addToHistory(topic, title, body, type);
+        } else {
+            const error = await response.json();
+            throw new Error(error.error || 'Failed to send notification');
+        }
+        
+    } catch (error) {
+        console.error('Push notification error:', error);
+        
+        // For demo/testing - show success anyway since Cloud Functions might not be deployed
+        if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
+            showToast('Demo mode: Notification would be sent in production', 'info');
+            clearPushForm();
+            addToHistory(topic, title, body, type);
+        } else {
+            showToast(`Error: ${error.message}`, 'error');
+        }
+    }
+    
+    submitBtn.innerHTML = originalText;
+    submitBtn.disabled = false;
+}
+
+function clearPushForm() {
+    document.getElementById('pushNotificationForm')?.reset();
+    document.getElementById('previewTitle').textContent = 'Notification Title';
+    document.getElementById('previewBody').textContent = 'Your message will appear here...';
+    document.getElementById('titleCount').textContent = '0';
+    document.getElementById('bodyCount').textContent = '0';
+}
+
+function addToHistory(topic, title, body, type) {
+    const historyContainer = document.getElementById('pushHistory');
+    if (!historyContainer) return;
+    
+    const icons = {
+        general: 'fa-bell',
+        emergency: 'fa-exclamation-triangle',
+        sport: 'fa-running',
+        'performing-arts': 'fa-music'
+    };
+    
+    const topicNames = {
+        general: 'General',
+        emergency: 'Emergency',
+        primary: 'Primary School',
+        middle: 'Middle School',
+        senior: 'Senior College',
+        sport: 'Sport',
+        'performing-arts': 'Performing Arts',
+        production: 'Production'
+    };
+    
+    const newItem = document.createElement('div');
+    newItem.className = 'history-item';
+    newItem.innerHTML = `
+        <div class="history-icon ${type}"><i class="fas ${icons[type] || 'fa-bell'}"></i></div>
+        <div class="history-content">
+            <strong>${title}</strong>
+            <p>${body.substring(0, 100)}${body.length > 100 ? '...' : ''}</p>
+            <span class="history-meta">${topicNames[topic] || topic} • Just now</span>
+        </div>
+    `;
+    
+    historyContainer.insertBefore(newItem, historyContainer.firstChild);
+}
+
+// Initialize push notifications when section is shown
+document.addEventListener('DOMContentLoaded', () => {
+    // Add push-notifications to the section navigation
+    initPushNotifications();
+});

@@ -629,29 +629,172 @@ function renderTermDates() {
 
 function renderSubscriptions() {
     const container = document.getElementById('subscriptionsList');
+    const permissionStatus = document.getElementById('notificationPermission');
     
-    container.innerHTML = demoData.subscriptions.map(sub => `
-        <div class="subscription-item">
-            <div class="subscription-info">
-                <h4>${sub.name}</h4>
-                <p>${sub.description}</p>
+    // Check if push notifications are supported
+    const isSupported = window.MGSPush && window.MGSPush.isSupported();
+    const permission = window.MGSPush ? window.MGSPush.getPermission() : 'unsupported';
+    
+    // Show permission status
+    if (permissionStatus) {
+        if (!isSupported) {
+            permissionStatus.innerHTML = `
+                <div class="permission-banner unsupported">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <div>
+                        <strong>Push notifications not supported</strong>
+                        <p>Your browser doesn't support push notifications. Try using Chrome or Edge.</p>
+                    </div>
+                </div>
+            `;
+        } else if (permission === 'default') {
+            permissionStatus.innerHTML = `
+                <div class="permission-banner prompt">
+                    <i class="fas fa-bell"></i>
+                    <div>
+                        <strong>Enable Push Notifications</strong>
+                        <p>Get instant alerts for school updates, sports results, and emergencies.</p>
+                    </div>
+                    <button class="enable-notifications-btn" onclick="enablePushNotifications()">
+                        Enable
+                    </button>
+                </div>
+            `;
+        } else if (permission === 'granted') {
+            permissionStatus.innerHTML = `
+                <div class="permission-banner enabled">
+                    <i class="fas fa-check-circle"></i>
+                    <div>
+                        <strong>Notifications Enabled</strong>
+                        <p>You'll receive push notifications for your subscribed topics.</p>
+                    </div>
+                    <button class="test-notification-btn" onclick="testNotification()">
+                        Test
+                    </button>
+                </div>
+            `;
+        } else if (permission === 'denied') {
+            permissionStatus.innerHTML = `
+                <div class="permission-banner denied">
+                    <i class="fas fa-times-circle"></i>
+                    <div>
+                        <strong>Notifications Blocked</strong>
+                        <p>Please enable notifications in your browser settings to receive alerts.</p>
+                    </div>
+                </div>
+            `;
+        }
+    }
+    
+    // Render subscription toggles using push notification topics
+    const topics = window.MGSPush ? window.MGSPush.topics : {};
+    
+    // Use real topics if available, otherwise fall back to demo data
+    if (Object.keys(topics).length > 0) {
+        container.innerHTML = Object.entries(topics).map(([id, topic]) => {
+            const isSubscribed = window.MGSPush ? window.MGSPush.isSubscribed(id) : false;
+            const isRequired = topic.required;
+            const isDisabled = permission !== 'granted' || isRequired;
+            
+            return `
+                <div class="subscription-item ${isRequired ? 'required' : ''}">
+                    <div class="subscription-icon" style="background: ${topic.color}20; color: ${topic.color};">
+                        <i class="fas ${topic.icon}"></i>
+                    </div>
+                    <div class="subscription-info">
+                        <h4>${topic.name} ${isRequired ? '<span class="required-badge">Required</span>' : ''}</h4>
+                        <p>${topic.description}</p>
+                    </div>
+                    <label class="toggle-switch ${isDisabled && !isRequired ? 'disabled' : ''}">
+                        <input type="checkbox" 
+                               data-topic="${id}" 
+                               ${isSubscribed || isRequired ? 'checked' : ''} 
+                               ${isRequired ? 'disabled' : ''}
+                               onchange="handleSubscriptionChange('${id}', this.checked)">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+            `;
+        }).join('');
+    } else {
+        // Fallback to demo data
+        container.innerHTML = demoData.subscriptions.map(sub => `
+            <div class="subscription-item">
+                <div class="subscription-info">
+                    <h4>${sub.name}</h4>
+                    <p>${sub.description}</p>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" data-id="${sub.id}" ${sub.enabled ? 'checked' : ''}>
+                    <span class="toggle-slider"></span>
+                </label>
             </div>
-            <label class="toggle-switch">
-                <input type="checkbox" data-id="${sub.id}" ${sub.enabled ? 'checked' : ''}>
-                <span class="toggle-slider"></span>
-            </label>
-        </div>
-    `).join('');
+        `).join('');
+    }
+}
+
+async function enablePushNotifications() {
+    if (!window.MGSPush) {
+        showToast('Push notifications not available', 'error');
+        return;
+    }
+    
+    showToast('Requesting permission...', 'info');
+    
+    try {
+        // Initialize push module
+        await window.MGSPush.init();
+        
+        // Request permission
+        const token = await window.MGSPush.requestPermission();
+        
+        if (token) {
+            showToast('Push notifications enabled! 🎉', 'success');
+            
+            // Setup foreground message handler
+            window.MGSPush.setupForegroundHandler();
+            
+            // Re-render to show updated state
+            renderSubscriptions();
+        } else {
+            showToast('Permission was denied', 'error');
+            renderSubscriptions();
+        }
+    } catch (error) {
+        console.error('Failed to enable notifications:', error);
+        showToast('Failed to enable notifications', 'error');
+    }
+}
+
+async function handleSubscriptionChange(topic, enabled) {
+    if (!window.MGSPush) return;
+    
+    try {
+        if (enabled) {
+            await window.MGSPush.subscribe(topic);
+            showToast(`Subscribed to ${window.MGSPush.topics[topic]?.name || topic}`, 'success');
+        } else {
+            await window.MGSPush.unsubscribe(topic);
+            showToast(`Unsubscribed from ${window.MGSPush.topics[topic]?.name || topic}`, 'info');
+        }
+    } catch (error) {
+        console.error('Subscription change failed:', error);
+        showToast('Failed to update subscription', 'error');
+        // Revert the toggle
+        renderSubscriptions();
+    }
+}
+
+function testNotification() {
+    if (window.MGSPush) {
+        window.MGSPush.test();
+        showToast('Test notification sent!', 'success');
+    }
 }
 
 function saveSubscriptions() {
-    const toggles = document.querySelectorAll('#subscriptionsList input[type="checkbox"]');
-    toggles.forEach(toggle => {
-        const sub = demoData.subscriptions.find(s => s.id === toggle.dataset.id);
-        if (sub) {
-            sub.enabled = toggle.checked;
-        }
-    });
+    // For push notifications, subscriptions are saved automatically
+    // This function is kept for backwards compatibility
     showToast('Subscription preferences saved!', 'success');
 }
 

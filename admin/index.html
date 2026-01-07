@@ -58,6 +58,12 @@
                     
                     <li class="nav-section">Content</li>
                     <li>
+                        <a href="#" class="nav-link" data-section="push-notifications">
+                            <i class="fas fa-paper-plane"></i>
+                            <span>Push Notifications</span>
+                        </a>
+                    </li>
+                    <li>
                         <a href="#" class="nav-link" data-section="contacts">
                             <i class="fas fa-address-book"></i>
                             <span>Contacts</span>
@@ -400,6 +406,138 @@
                     
                     <div class="term-dates-admin" id="termDatesAdmin">
                         <!-- Populated by JS -->
+                    </div>
+                </section>
+
+                <!-- Push Notifications Section -->
+                <section class="section" id="section-push-notifications">
+                    <div class="section-header">
+                        <div>
+                            <h2>Send Push Notification</h2>
+                            <p>Send instant notifications to subscribed devices</p>
+                        </div>
+                    </div>
+                    
+                    <div class="push-form-container">
+                        <form id="pushNotificationForm" class="push-form">
+                            <div class="form-group">
+                                <label>Notification Type</label>
+                                <div class="type-selector">
+                                    <label class="type-option">
+                                        <input type="radio" name="notificationType" value="general" checked>
+                                        <div class="type-card">
+                                            <i class="fas fa-bell"></i>
+                                            <span>General</span>
+                                        </div>
+                                    </label>
+                                    <label class="type-option">
+                                        <input type="radio" name="notificationType" value="emergency">
+                                        <div class="type-card emergency">
+                                            <i class="fas fa-exclamation-triangle"></i>
+                                            <span>Emergency</span>
+                                        </div>
+                                    </label>
+                                    <label class="type-option">
+                                        <input type="radio" name="notificationType" value="sport">
+                                        <div class="type-card sport">
+                                            <i class="fas fa-running"></i>
+                                            <span>Sport</span>
+                                        </div>
+                                    </label>
+                                    <label class="type-option">
+                                        <input type="radio" name="notificationType" value="performing-arts">
+                                        <div class="type-card arts">
+                                            <i class="fas fa-music"></i>
+                                            <span>Arts</span>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="pushTopic">Send To</label>
+                                <select id="pushTopic" required>
+                                    <option value="">Select audience...</option>
+                                    <option value="general">📢 All Subscribers (General)</option>
+                                    <option value="emergency">🚨 Emergency (All Devices)</option>
+                                    <option value="primary">🎒 Primary School</option>
+                                    <option value="middle">📚 Middle School</option>
+                                    <option value="senior">🎓 Senior College</option>
+                                    <option value="sport">⚽ Sport Subscribers</option>
+                                    <option value="performing-arts">🎭 Performing Arts</option>
+                                    <option value="production">🎬 School Production</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="pushTitle">Title</label>
+                                <input type="text" id="pushTitle" placeholder="e.g., School Closure Tomorrow" required maxlength="100">
+                                <span class="char-count"><span id="titleCount">0</span>/100</span>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="pushBody">Message</label>
+                                <textarea id="pushBody" rows="3" placeholder="Enter your notification message..." required maxlength="500"></textarea>
+                                <span class="char-count"><span id="bodyCount">0</span>/500</span>
+                            </div>
+                            
+                            <div class="push-preview">
+                                <h4>Preview</h4>
+                                <div class="notification-preview">
+                                    <div class="preview-icon">
+                                        <img src="../icons/icon-72.png" alt="MGS" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2250%22 cy=%2250%22 r=%2245%22 fill=%22%23005a5a%22/><text x=%2250%22 y=%2260%22 text-anchor=%22middle%22 fill=%22white%22 font-size=%2230%22>M</text></svg>'">
+                                    </div>
+                                    <div class="preview-content">
+                                        <div class="preview-title" id="previewTitle">Notification Title</div>
+                                        <div class="preview-body" id="previewBody">Your message will appear here...</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-actions">
+                                <button type="button" class="btn btn-outline" onclick="clearPushForm()">
+                                    <i class="fas fa-times"></i> Clear
+                                </button>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-paper-plane"></i> Send Notification
+                                </button>
+                            </div>
+                        </form>
+                        
+                        <div class="push-info">
+                            <h4><i class="fas fa-info-circle"></i> How it works</h4>
+                            <ul>
+                                <li>Notifications are sent instantly to all devices subscribed to the selected topic</li>
+                                <li>Emergency notifications go to ALL devices and cannot be unsubscribed</li>
+                                <li>Parents choose their subscription preferences in the app</li>
+                                <li>Notifications appear even when the app is closed</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="section-header" style="margin-top: 2rem;">
+                        <div>
+                            <h3>Recent Notifications</h3>
+                            <p>History of sent notifications</p>
+                        </div>
+                    </div>
+                    <div class="push-history" id="pushHistory">
+                        <div class="history-item">
+                            <div class="history-icon general"><i class="fas fa-bell"></i></div>
+                            <div class="history-content">
+                                <strong>Welcome to Term 1</strong>
+                                <p>Welcome back! We're excited to start the new school year...</p>
+                                <span class="history-meta">General • 2 days ago • 1,234 delivered</span>
+                            </div>
+                        </div>
+                        <div class="history-item">
+                            <div class="history-icon sport"><i class="fas fa-running"></i></div>
+                            <div class="history-content">
+                                <strong>Swimming Sports Postponed</strong>
+                                <p>Due to weather conditions, swimming sports moved to Friday...</p>
+                                <span class="history-meta">Sport • 3 days ago • 456 delivered</span>
+                            </div>
+                        </div>
                     </div>
                 </section>
 
