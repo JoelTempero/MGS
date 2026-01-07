@@ -153,12 +153,10 @@ async function requestNotificationPermission() {
 
 /**
  * Get VAPID key for web push
- * Generate this in Firebase Console > Project Settings > Cloud Messaging > Web Push certificates
+ * Generated from Firebase Console > Project Settings > Cloud Messaging > Web Push certificates
  */
 function getVapidKey() {
-    // TODO: Replace with your actual VAPID key from Firebase Console
-    // Go to: Firebase Console > Project Settings > Cloud Messaging > Web Push certificates > Generate key pair
-    return 'YOUR_VAPID_KEY_HERE';
+    return 'BCtnTkXlm6tdZbueROu954rpQzI6FOw5LXMLSxWcKtEr9DTlG4owUQwDxJ1xqTGUZydFxDC-UBbEHYIjnX0suz4';
 }
 
 /**
