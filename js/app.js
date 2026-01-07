@@ -187,6 +187,20 @@ function initApp() {
     renderSubscriptions();
     renderNotificationPanel();
     renderCalendar();
+    
+    // Listen for ICS calendar data to load
+    window.addEventListener('icsCalendarLoaded', (e) => {
+        console.log('📅 ICS Calendar data received:', e.detail);
+        
+        // Re-render events and calendar with live data
+        renderEvents();
+        renderCalendar();
+        
+        // Show notification about data source
+        if (e.detail.source === 'live' && e.detail.events.length > 0) {
+            showToast(`Loaded ${e.detail.events.length} events from school calendar`, 'success');
+        }
+    });
 }
 
 // ===== Greeting =====
@@ -447,23 +461,57 @@ function createAlertCard(alert, full = false) {
 
 function renderEvents() {
     const container = document.getElementById('eventsPreview');
-    const upcomingEvents = demoData.events.slice(0, 3);
+    const sourceEl = document.getElementById('calendarSource');
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    
+    // Try to get live ICS events first, fall back to demo data
+    let upcomingEvents;
+    let isLive = false;
+    
+    if (window.ICSCalendar) {
+        const cache = window.ICSCalendar.getCache();
+        if (cache.events.length > 0 || cache.days.length > 0) {
+            upcomingEvents = window.ICSCalendar.getUpcomingEvents(30).slice(0, 4);
+            isLive = true;
+        }
+    }
+    
+    // Fallback to demo data if no ICS events
+    if (!upcomingEvents || upcomingEvents.length === 0) {
+        upcomingEvents = demoData.events.slice(0, 4);
+        isLive = false;
+    }
     
     container.innerHTML = upcomingEvents.map(event => {
-        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        const eventDate = new Date(event.date);
+        const style = window.ICSCalendar ? 
+            window.ICSCalendar.getEventStyle(event.type) : 
+            { icon: 'fa-calendar', color: '#005a5a' };
+        
         return `
-            <div class="event-card">
-                <div class="event-date">
-                    <span class="day">${event.date.getDate()}</span>
-                    <span class="month">${months[event.date.getMonth()]}</span>
+            <div class="event-card" style="border-left: 3px solid ${style.color};">
+                <div class="event-date" style="background: ${style.color}15;">
+                    <span class="day">${eventDate.getDate()}</span>
+                    <span class="month">${months[eventDate.getMonth()]}</span>
                 </div>
                 <div class="event-details">
                     <h4>${event.title}</h4>
-                    <p>${event.date.toLocaleDateString('en-NZ', { weekday: 'long' })}</p>
+                    <p>${eventDate.toLocaleDateString('en-NZ', { weekday: 'long' })}${event.location ? ' • ' + event.location : ''}</p>
                 </div>
             </div>
         `;
     }).join('');
+    
+    // Show data source indicator
+    if (sourceEl) {
+        if (isLive) {
+            sourceEl.innerHTML = `<span class="live-dot"></span> Live`;
+            sourceEl.style.color = '#2e7d32';
+        } else {
+            sourceEl.innerHTML = `<i class="fas fa-clock" style="font-size: 10px;"></i> Demo`;
+            sourceEl.style.color = '#888';
+        }
+    }
 }
 
 function renderNewsletters(filter = 'all') {
@@ -629,6 +677,16 @@ function renderCalendar() {
     const today = new Date();
     const isCurrentMonth = today.getFullYear() === year && today.getMonth() === month;
     
+    // Get events for this month (ICS or demo)
+    let monthEvents;
+    if (window.ICSCalendar) {
+        monthEvents = window.ICSCalendar.getEventsForMonth(year, month);
+    } else {
+        monthEvents = demoData.events.filter(e => 
+            e.date.getFullYear() === year && e.date.getMonth() === month
+        );
+    }
+    
     let html = '';
     
     // Day headers
@@ -644,17 +702,24 @@ function renderCalendar() {
     // Current month days
     for (let day = 1; day <= daysInMonth; day++) {
         const isToday = isCurrentMonth && today.getDate() === day;
-        const hasEvent = demoData.events.some(e => 
-            e.date.getFullYear() === year && 
-            e.date.getMonth() === month && 
-            e.date.getDate() === day
-        );
+        
+        // Check for events on this day
+        let hasEvent = false;
+        if (window.ICSCalendar) {
+            hasEvent = window.ICSCalendar.dateHasEvents(year, month, day);
+        } else {
+            hasEvent = demoData.events.some(e => 
+                e.date.getFullYear() === year && 
+                e.date.getMonth() === month && 
+                e.date.getDate() === day
+            );
+        }
         
         const classes = ['calendar-day'];
         if (isToday) classes.push('today');
         if (hasEvent) classes.push('has-event');
         
-        html += `<div class="${classes.join(' ')}">${day}</div>`;
+        html += `<div class="${classes.join(' ')}" data-date="${year}-${month+1}-${day}">${day}</div>`;
     }
     
     // Next month days
@@ -666,24 +731,113 @@ function renderCalendar() {
     
     grid.innerHTML = html;
     
-    // Render events for this month
-    const eventList = document.getElementById('eventList');
-    const monthEvents = demoData.events.filter(e => 
-        e.date.getFullYear() === year && e.date.getMonth() === month
-    );
+    // Add click handlers to days
+    grid.querySelectorAll('.calendar-day:not(.other-month)').forEach(dayEl => {
+        dayEl.addEventListener('click', () => {
+            const dateStr = dayEl.dataset.date;
+            if (dateStr) {
+                showDayEvents(dateStr);
+            }
+        });
+    });
     
-    eventList.innerHTML = monthEvents.map(event => `
-        <div class="event-card">
-            <div class="event-date">
-                <span class="day">${event.date.getDate()}</span>
-                <span class="month">${months[event.date.getMonth()].substring(0, 3)}</span>
+    // Render events list for this month
+    renderMonthEventsList(monthEvents, months, month);
+}
+
+function renderMonthEventsList(monthEvents, months, currentMonth) {
+    const eventList = document.getElementById('eventList');
+    
+    // Sort by date
+    monthEvents.sort((a, b) => new Date(a.date) - new Date(b.date));
+    
+    if (monthEvents.length === 0) {
+        eventList.innerHTML = '<p style="color: var(--mid-gray); text-align: center; padding: 20px;">No events this month</p>';
+        return;
+    }
+    
+    eventList.innerHTML = monthEvents.map(event => {
+        const eventDate = new Date(event.date);
+        const style = window.ICSCalendar ? 
+            window.ICSCalendar.getEventStyle(event.type) : 
+            { icon: 'fa-calendar', color: '#005a5a' };
+        
+        return `
+            <div class="event-card" style="border-left: 3px solid ${style.color};">
+                <div class="event-date" style="background: ${style.color}15;">
+                    <span class="day">${eventDate.getDate()}</span>
+                    <span class="month">${months[eventDate.getMonth()].substring(0, 3)}</span>
+                </div>
+                <div class="event-details">
+                    <h4>${event.title}</h4>
+                    <p>
+                        <i class="fas ${style.icon}" style="color: ${style.color}; margin-right: 6px;"></i>
+                        ${eventDate.toLocaleDateString('en-NZ', { weekday: 'long' })}
+                        ${event.location ? ' • ' + event.location : ''}
+                    </p>
+                </div>
             </div>
-            <div class="event-details">
-                <h4>${event.title}</h4>
-                <p>${event.date.toLocaleDateString('en-NZ', { weekday: 'long' })}</p>
+        `;
+    }).join('');
+}
+
+function showDayEvents(dateStr) {
+    const [year, month, day] = dateStr.split('-').map(Number);
+    const date = new Date(year, month - 1, day);
+    
+    let dayEvents;
+    if (window.ICSCalendar) {
+        dayEvents = window.ICSCalendar.getEventsForDate(date);
+    } else {
+        dayEvents = demoData.events.filter(e => {
+            const d = new Date(e.date);
+            return d.getFullYear() === year && 
+                   d.getMonth() === month - 1 && 
+                   d.getDate() === day;
+        });
+    }
+    
+    if (dayEvents.length === 0) {
+        showToast(`No events on ${date.toLocaleDateString('en-NZ', { weekday: 'long', month: 'long', day: 'numeric' })}`, 'info');
+        return;
+    }
+    
+    // Create modal for day events
+    const modal = document.createElement('div');
+    modal.className = 'day-events-modal';
+    modal.innerHTML = `
+        <div class="day-events-content">
+            <div class="day-events-header">
+                <h3>${date.toLocaleDateString('en-NZ', { weekday: 'long', month: 'long', day: 'numeric' })}</h3>
+                <button class="close-day-events">&times;</button>
+            </div>
+            <div class="day-events-list">
+                ${dayEvents.map(event => {
+                    const style = window.ICSCalendar ? 
+                        window.ICSCalendar.getEventStyle(event.type) : 
+                        { icon: 'fa-calendar', color: '#005a5a' };
+                    return `
+                        <div class="day-event-item" style="border-left: 3px solid ${style.color};">
+                            <i class="fas ${style.icon}" style="color: ${style.color};"></i>
+                            <div>
+                                <strong>${event.title}</strong>
+                                ${event.location ? `<p>📍 ${event.location}</p>` : ''}
+                                ${event.description ? `<p>${event.description}</p>` : ''}
+                            </div>
+                        </div>
+                    `;
+                }).join('')}
             </div>
         </div>
-    `).join('') || '<p style="color: var(--mid-gray); text-align: center;">No events this month</p>';
+    `;
+    
+    document.body.appendChild(modal);
+    
+    // Close handlers
+    modal.querySelector('.close-day-events').addEventListener('click', () => modal.remove());
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) modal.remove();
+    });
 }
 
 // ===== Toast Notifications =====

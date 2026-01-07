@@ -1882,3 +1882,161 @@ img {
     clip: rect(0, 0, 0, 0);
     border: 0;
 }
+
+/* ===== Day Events Modal ===== */
+.day-events-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    padding: var(--space-md);
+    animation: fadeIn 0.2s ease;
+}
+
+.day-events-content {
+    background: var(--white);
+    border-radius: var(--radius-lg);
+    width: 100%;
+    max-width: 420px;
+    max-height: 80vh;
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+    animation: slideUp 0.3s ease;
+}
+
+.day-events-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-lg);
+    border-bottom: 1px solid var(--light-gray);
+    background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+    color: var(--white);
+}
+
+.day-events-header h3 {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    margin: 0;
+}
+
+.close-day-events {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: var(--white);
+    font-size: 1.5rem;
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+}
+
+.close-day-events:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.day-events-list {
+    padding: var(--space-md);
+    overflow-y: auto;
+    max-height: 60vh;
+}
+
+.day-event-item {
+    display: flex;
+    gap: var(--space-md);
+    padding: var(--space-md);
+    background: var(--off-white);
+    border-radius: var(--radius-sm);
+    margin-bottom: var(--space-sm);
+}
+
+.day-event-item:last-child {
+    margin-bottom: 0;
+}
+
+.day-event-item i {
+    font-size: 1.2rem;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.day-event-item strong {
+    display: block;
+    color: var(--near-black);
+    margin-bottom: var(--space-xs);
+}
+
+.day-event-item p {
+    font-size: 0.85rem;
+    color: var(--dark-gray);
+    margin: var(--space-xs) 0 0 0;
+    line-height: 1.4;
+}
+
+/* ===== Live Calendar Indicator ===== */
+.calendar-source {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    padding: var(--space-xs) var(--space-sm);
+    font-size: 0.75rem;
+}
+
+.calendar-source .live-dot {
+    width: 8px;
+    height: 8px;
+    background: var(--success);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* ===== Event Card Enhancements ===== */
+.event-card {
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.event-card:hover {
+    transform: translateX(4px);
+}
+
+.calendar-day {
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+}
+
+.calendar-day:not(.other-month):hover {
+    background: var(--primary-lighter);
+    color: var(--white);
+    transform: scale(1.1);
+}
+
+.calendar-day.has-event {
+    position: relative;
+}
+
+.calendar-day.has-event::after {
+    content: '';
+    position: absolute;
+    bottom: 4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 6px;
+    height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+}
