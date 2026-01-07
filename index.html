@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Middleton Grange School</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Splash Screen -->
+    <div id="splash-screen" class="splash-screen">
+        <div class="splash-content">
+            <div class="splash-logo">
+                <svg viewBox="0 0 100 100" class="crest-icon">
+                    <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" stroke-width="2"/>
+                    <path d="M50 15 L50 85 M25 50 L75 50" stroke="currentColor" stroke-width="3"/>
+                    <path d="M30 30 Q50 20 70 30 Q80 50 70 70 Q50 80 30 70 Q20 50 30 30" fill="none" stroke="currentColor" stroke-width="1.5"/>
+                </svg>
+            </div>
+            <h1 class="splash-title">Middleton Grange</h1>
+            <p class="splash-subtitle">Soli Deo Gloria</p>
+            <div class="splash-loader">
+                <div class="loader-bar"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div id="app" class="app">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="header-left">
+                    <button class="menu-btn" id="menuBtn" aria-label="Menu">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
+                </div>
+                <div class="header-center">
+                    <h1 class="header-title">Middleton Grange</h1>
+                </div>
+                <div class="header-right">
+                    <button class="notification-btn" id="notificationBtn" aria-label="Notifications">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge" id="notificationBadge">3</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Side Navigation -->
+        <nav class="side-nav" id="sideNav">
+            <div class="side-nav-header">
+                <div class="side-nav-logo">
+                    <svg viewBox="0 0 100 100" class="crest-icon-small">
+                        <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" stroke-width="2"/>
+                        <path d="M50 15 L50 85 M25 50 L75 50" stroke="currentColor" stroke-width="3"/>
+                    </svg>
+                </div>
+                <div class="side-nav-info">
+                    <h2>MGS Connect</h2>
+                    <p>Stay Connected</p>
+                </div>
+                <button class="side-nav-close" id="sideNavClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <ul class="side-nav-menu">
+                <li><a href="#" data-page="home" class="active"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="#" data-page="absences"><i class="fas fa-user-clock"></i> Report Absence</a></li>
+                <li><a href="#" data-page="newsletters"><i class="fas fa-newspaper"></i> Newsletters</a></li>
+                <li><a href="#" data-page="calendar"><i class="fas fa-calendar-alt"></i> Calendar</a></li>
+                <li><a href="#" data-page="notices"><i class="fas fa-bullhorn"></i> Daily Notices</a></li>
+                <li><a href="#" data-page="alerts"><i class="fas fa-bell"></i> Alerts</a></li>
+                <li><a href="#" data-page="contacts"><i class="fas fa-address-book"></i> Contacts</a></li>
+                <li><a href="#" data-page="links"><i class="fas fa-link"></i> Quick Links</a></li>
+                <li><a href="#" data-page="term-dates"><i class="fas fa-calendar-check"></i> Term Dates</a></li>
+                <li><a href="#" data-page="subscriptions"><i class="fas fa-cog"></i> My Subscriptions</a></li>
+            </ul>
+            <div class="side-nav-footer">
+                <a href="#" id="adminLoginLink" class="admin-link"><i class="fas fa-lock"></i> Admin Login</a>
+            </div>
+        </nav>
+
+        <!-- Overlay -->
+        <div class="overlay" id="overlay"></div>
+
+        <!-- Main Content -->
+        <main class="main-content" id="mainContent">
+            <!-- Home Page -->
+            <section class="page active" id="page-home">
+                <!-- Hero Section -->
+                <div class="hero">
+                    <div class="hero-content">
+                        <div class="hero-greeting">
+                            <span class="greeting-text" id="greetingText">Good Morning</span>
+                            <h2 class="hero-title">Welcome to MGS</h2>
+                        </div>
+                        <div class="hero-verse">
+                            <p id="dailyVerse">"But godliness with contentment is great gain."</p>
+                            <span class="verse-ref">1 Timothy 6:6</span>
+                        </div>
+                    </div>
+                    <div class="hero-decoration">
+                        <div class="decoration-circle"></div>
+                        <div class="decoration-circle"></div>
+                        <div class="decoration-circle"></div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions Grid -->
+                <div class="section">
+                    <h3 class="section-title">Quick Actions</h3>
+                    <div class="quick-actions-grid">
+                        <button class="action-card" data-page="absences">
+                            <div class="action-icon absence-icon">
+                                <i class="fas fa-phone-alt"></i>
+                            </div>
+                            <span class="action-label">Report<br>Absence</span>
+                        </button>
+                        <button class="action-card" data-page="newsletters">
+                            <div class="action-icon newsletter-icon">
+                                <i class="fas fa-newspaper"></i>
+                            </div>
+                            <span class="action-label">News-<br>letters</span>
+                        </button>
+                        <button class="action-card" data-page="calendar">
+                            <div class="action-icon calendar-icon">
+                                <i class="fas fa-calendar-alt"></i>
+                            </div>
+                            <span class="action-label">School<br>Calendar</span>
+                        </button>
+                        <button class="action-card" data-page="notices">
+                            <div class="action-icon notices-icon">
+                                <i class="fas fa-bullhorn"></i>
+                            </div>
+                            <span class="action-label">Daily<br>Notices</span>
+                        </button>
+                        <a href="https://middleton.school.kiwi/" target="_blank" class="action-card">
+                            <div class="action-icon portal-icon">
+                                <i class="fas fa-globe"></i>
+                            </div>
+                            <span class="action-label">Parent<br>Portal</span>
+                        </a>
+                        <button class="action-card" data-page="alerts">
+                            <div class="action-icon alerts-icon">
+                                <i class="fas fa-bell"></i>
+                            </div>
+                            <span class="action-label">School<br>Alerts</span>
+                            <span class="action-badge" id="alertsBadge">3</span>
+                        </button>
+                        <button class="action-card" data-page="contacts">
+                            <div class="action-icon contacts-icon">
+                                <i class="fas fa-address-book"></i>
+                            </div>
+                            <span class="action-label">School<br>Contacts</span>
+                        </button>
+                        <button class="action-card" data-page="links">
+                            <div class="action-icon links-icon">
+                                <i class="fas fa-link"></i>
+                            </div>
+                            <span class="action-label">Quick<br>Links</span>
+                        </button>
+                        <button class="action-card" data-page="term-dates">
+                            <div class="action-icon term-icon">
+                                <i class="fas fa-calendar-check"></i>
+                            </div>
+                            <span class="action-label">Term<br>Dates</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Recent Alerts -->
+                <div class="section">
+                    <div class="section-header">
+                        <h3 class="section-title">Recent Alerts</h3>
+                        <a href="#" class="view-all" data-page="alerts">View All</a>
+                    </div>
+                    <div class="alerts-preview" id="alertsPreview">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <!-- Upcoming Events -->
+                <div class="section">
+                    <div class="section-header">
+                        <h3 class="section-title">Upcoming Events</h3>
+                        <a href="#" class="view-all" data-page="calendar">View All</a>
+                    </div>
+                    <div class="events-preview" id="eventsPreview">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Absences Page -->
+            <section class="page" id="page-absences">
+                <div class="page-header">
+                    <button class="back-btn" data-page="home"><i class="fas fa-arrow-left"></i></button>
+                    <h2>Report an Absence</h2>
+                </div>
+                <div class="page-content">
+                    <div class="absence-options">
+                        <div class="absence-card">
+                            <div class="absence-icon-large">
+                                <i class="fas fa-phone-alt"></i>
+                            </div>
+                            <h3>Call the Office</h3>
+                            <p>Speak directly with our administration team</p>
+                            <a href="tel:+6433489826" class="btn btn-primary">
+                                <i class="fas fa-phone"></i> Call Now
+                            </a>
+                            <span class="phone-number">+64 (03) 348 9826</span>
+                        </div>
+                        <div class="absence-card">
+                            <div class="absence-icon-large email">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <h3>Send an Email</h3>
+                            <p>Report absence via email for quick processing</p>
+                            <a href="mailto:absences@middleton.school.nz" class="btn btn-secondary">
+                                <i class="fas fa-envelope"></i> Send Email
+                            </a>
+                            <span class="email-address">absences@middleton.school.nz</span>
+                        </div>
+                    </div>
+                    <div class="absence-info">
+                        <h4><i class="fas fa-info-circle"></i> Important Information</h4>
+                        <ul>
+                            <li>Please report absences before 9:00 AM</li>
+                            <li>Include student name, year level, and reason</li>
+                            <li>For extended absences, please contact the school office</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Newsletters Page -->
+            <section class="page" id="page-newsletters">
+                <div class="page-header">
+                    <button class="back-btn" data-page="home"><i class="fas fa-arrow-left"></i></button>
+                    <h2>Newsletters</h2>
+                </div>
+                <div class="page-content">
+                    <div class="newsletter-tabs">
+                        <button class="tab-btn active" data-tab="all">All</button>
+                        <button class="tab-btn" data-tab="primary">Primary</button>
+                        <button class="tab-btn" data-tab="middle">Middle</button>
+                        <button class="tab-btn" data-tab="senior">Senior</button>
+                    </div>
+                    <div class="newsletter-list" id="newsletterList">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Calendar Page -->
+            <section class="page" id="page-calendar">
+                <div class="page-header">
+                    <button class="back-btn" data-page="home"><i class="fas fa-arrow-left"></i></button>
+                    <h2>School Calendar</h2>
+                </div>
+                <div class="page-content">
+                    <div class="calendar-nav">
+                        <button class="calendar-nav-btn" id="prevMonth"><i class="fas fa-chevron-left"></i></button>
+                        <h3 class="calendar-month" id="currentMonth">January 2026</h3>
+                        <button class="calendar-nav-btn" id="nextMonth"><i class="fas fa-chevron-right"></i></button>
+                    </div>
+                    <div class="calendar-grid" id="calendarGrid">
+                        <!-- Generated by JS -->
+                    </div>
+                    <div class="calendar-events">
+                        <h4>Events This Month</h4>
+                        <div class="event-list" id="eventList">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+                    <div class="external-calendar">
+                        <a href="https://middleton.school.kiwi/" target="_blank" class="btn btn-outline">
+                            <i class="fas fa-external-link-alt"></i> View Full Calendar in Kamar
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Daily Notices Page -->
+            <section class="page" id="page-notices">
+                <div class="page-header">
+                    <button class="back-btn" data-page="home"><i class="fas fa-arrow-left"></i></button>
+                    <h2>Daily Notices</h2>
+                </div>
+                <div class="page-content">
+                    <div class="notices-date">
+                        <i class="fas fa-calendar-day"></i>
+                        <span id="noticesDate">Wednesday, 7 January 2026</span>
+                    </div>
+                    <div class="notices-tabs">
+                        <button class="tab-btn active" data-tab="all">All</button>
+                        <button class="tab-btn" data-tab="primary">Primary</button>
+                        <button class="tab-btn" data-tab="middle">Middle</button>
+                        <button class="tab-btn" data-tab="senior">Senior</button>
+                    </div>
+                    <div class="notices-list" id="noticesList">
+                        <!-- Populated by JS -->
+                    </div>
+                    <div class="external-notices">
+                        <a href="https://middleton.school.kiwi/" target="_blank" class="btn btn-outline">
+                            <i class="fas fa-external-link-alt"></i> View Notices in Kamar Portal
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Alerts Page -->
+            <section class="page" id="page-alerts">
+                <div class="page-header">
+                    <button class="back-btn" data-page="home"><i class="fas fa-arrow-left"></i></button>
+                    <h2>School Alerts</h2>
+                </div>
+                <div class="page-content">
+                    <div class="alerts-filter">
+                        <select id="alertsFilter" class="filter-select">
+                            <option value="all">All Alerts</option>
+                            <option value="emergency">Emergency</option>
+                            <option value="general">General</option>
+                            <option value="sport">Sport</option>
+                            <option value="performing-arts">Performing Arts</option>
+                        </select>
+                    </div>
+                    <div class="alerts-list" id="alertsList">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Contacts Page -->
+            <section class="page" id="page-contacts">
+                <div class="page-header">
+                    <button class="back-btn" data-page="home"><i class="fas fa-arrow-left"></i></button>
+                    <h2>School Contacts</h2>
+                </div>
+                <div class="page-content">
+                    <div class="contacts-search">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Search contacts..." id="contactsSearch">
+                    </div>
+                    <div class="contacts-list" id="contactsList">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Links Page -->
+            <section class="page" id="page-links">
+                <div class="page-header">
+                    <button class="back-btn" data-page="home"><i class="fas fa-arrow-left"></i></button>
+                    <h2>Quick Links</h2>
+                </div>
+                <div class="page-content">
+                    <div class="links-grid" id="linksGrid">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Term Dates Page -->
+            <section class="page" id="page-term-dates">
+                <div class="page-header">
+                    <button class="back-btn" data-page="home"><i class="fas fa-arrow-left"></i></button>
+                    <h2>Term Dates 2026</h2>
+                </div>
+                <div class="page-content">
+                    <div class="term-list" id="termList">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Subscriptions Page -->
+            <section class="page" id="page-subscriptions">
+                <div class="page-header">
+                    <button class="back-btn" data-page="home"><i class="fas fa-arrow-left"></i></button>
+                    <h2>My Subscriptions</h2>
+                </div>
+                <div class="page-content">
+                    <p class="subscriptions-intro">Choose which notifications you'd like to receive:</p>
+                    <div class="subscriptions-list" id="subscriptionsList">
+                        <!-- Populated by JS -->
+                    </div>
+                    <button class="btn btn-primary save-subscriptions" id="saveSubscriptions">
+                        <i class="fas fa-save"></i> Save Preferences
+                    </button>
+                </div>
+            </section>
+        </main>
+
+        <!-- Login Modal -->
+        <div class="modal" id="loginModal">
+            <div class="modal-content">
+                <button class="modal-close" id="loginModalClose"><i class="fas fa-times"></i></button>
+                <div class="modal-header">
+                    <div class="modal-icon">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <h2>Admin Login</h2>
+                    <p>Access the administration portal</p>
+                </div>
+                <form id="loginForm" class="login-form">
+                    <div class="form-group">
+                        <label for="username"><i class="fas fa-user"></i> Username</label>
+                        <input type="text" id="username" name="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password"><i class="fas fa-key"></i> Password</label>
+                        <input type="password" id="password" name="password" required>
+                    </div>
+                    <div class="form-error" id="loginError"></div>
+                    <button type="submit" class="btn btn-primary btn-block">
+                        <i class="fas fa-sign-in-alt"></i> Login
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Notification Panel -->
+        <div class="notification-panel" id="notificationPanel">
+            <div class="notification-panel-header">
+                <h3>Notifications</h3>
+                <button class="mark-read-btn" id="markAllRead">Mark all as read</button>
+            </div>
+            <div class="notification-panel-content" id="notificationPanelContent">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+
+        <!-- Toast Container -->
+        <div class="toast-container" id="toastContainer"></div>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
