@@ -74,7 +74,8 @@ const defaultDemoData = {
         { id: 1, title: 'School Closure Tomorrow', message: 'Due to extreme weather, school closed tomorrow.', time: '2 hours ago', unread: true },
         { id: 2, title: 'Swimming Sports Update', message: 'Rescheduled to Friday 10th January.', time: '5 hours ago', unread: true },
         { id: 3, title: 'Production Auditions', message: 'Sign up now for The Sound of Music!', time: '1 day ago', unread: true }
-    ]
+    ],
+    absenceReports: []
 };
 
 // ===== Demo Data (loaded from localStorage or defaults) =====
@@ -606,6 +607,159 @@ function initPages() {
     if (saveSubsBtn) {
         saveSubsBtn.addEventListener('click', saveSubscriptions);
     }
+
+    // Initialize absence report form
+    initAbsenceReportForm();
+}
+
+// ===== Absence/Late Report Form =====
+function initAbsenceReportForm() {
+    const form = document.getElementById('absenceReportForm');
+    const dateInput = document.getElementById('absenceDate');
+    const reportTypeRadios = document.querySelectorAll('input[name="reportType"]');
+    const expectedTimeGroup = document.getElementById('expectedTimeGroup');
+
+    if (!form) return;
+
+    // Set default date to today
+    if (dateInput) {
+        const today = new Date().toISOString().split('T')[0];
+        dateInput.value = today;
+        dateInput.min = today; // Can't report past absences
+    }
+
+    // Toggle expected time field based on report type
+    reportTypeRadios.forEach(radio => {
+        radio.addEventListener('change', () => {
+            if (radio.value === 'late' && radio.checked) {
+                expectedTimeGroup.style.display = 'block';
+            } else if (radio.value === 'absent' && radio.checked) {
+                expectedTimeGroup.style.display = 'none';
+            }
+        });
+    });
+
+    // Form submission
+    form.addEventListener('submit', handleAbsenceReportSubmit);
+
+    // Render existing reports
+    renderMyAbsenceReports();
+}
+
+function handleAbsenceReportSubmit(e) {
+    e.preventDefault();
+
+    const form = e.target;
+    const formData = new FormData(form);
+
+    // Validate required fields
+    const reportType = formData.get('reportType');
+    const studentName = formData.get('studentName')?.trim();
+    const yearLevel = formData.get('yearLevel');
+    const absenceDate = formData.get('absenceDate');
+    const reason = formData.get('absenceReason');
+    const contactPhone = formData.get('contactPhone')?.trim();
+
+    if (!reportType || !studentName || !yearLevel || !absenceDate || !reason || !contactPhone) {
+        showToast('Please fill in all required fields', 'error');
+        return;
+    }
+
+    // Create the report object
+    const report = {
+        id: Date.now(),
+        type: reportType, // 'absent' or 'late'
+        studentName: studentName,
+        yearLevel: yearLevel,
+        absenceDate: absenceDate,
+        expectedTime: reportType === 'late' ? formData.get('expectedTime') : null,
+        reason: reason,
+        details: formData.get('absenceDetails')?.trim() || '',
+        contactPhone: contactPhone,
+        status: 'pending', // pending | acknowledged | archived
+        submittedAt: new Date().toISOString(),
+        acknowledgedAt: null,
+        acknowledgedBy: null,
+        adminNotes: null
+    };
+
+    // Initialize absenceReports array if it doesn't exist
+    if (!demoData.absenceReports) {
+        demoData.absenceReports = [];
+    }
+
+    // Add to the beginning of the array (newest first)
+    demoData.absenceReports.unshift(report);
+
+    // Save to localStorage
+    saveDemoData();
+
+    // Show success message
+    const typeLabel = reportType === 'late' ? 'late arrival' : 'absence';
+    showToast(`${studentName}'s ${typeLabel} has been reported successfully!`, 'success');
+
+    // Reset form
+    form.reset();
+    // Reset date to today
+    const dateInput = document.getElementById('absenceDate');
+    if (dateInput) {
+        dateInput.value = new Date().toISOString().split('T')[0];
+    }
+    // Hide expected time group
+    document.getElementById('expectedTimeGroup').style.display = 'none';
+
+    // Re-render reports
+    renderMyAbsenceReports();
+}
+
+function renderMyAbsenceReports() {
+    const section = document.getElementById('myReportsSection');
+    const container = document.getElementById('myReportsList');
+
+    if (!section || !container) return;
+
+    // Get user's reports (in demo, we show all reports as if they're the user's)
+    const reports = demoData.absenceReports || [];
+
+    if (reports.length === 0) {
+        section.style.display = 'none';
+        return;
+    }
+
+    section.style.display = 'block';
+
+    // Show last 5 reports
+    const recentReports = reports.slice(0, 5);
+
+    container.innerHTML = recentReports.map(report => {
+        const statusClass = report.status === 'acknowledged' ? 'acknowledged' :
+                           report.status === 'archived' ? 'archived' : 'pending';
+        const statusLabel = report.status === 'acknowledged' ? 'Acknowledged' :
+                           report.status === 'archived' ? 'Archived' : 'Pending';
+        const typeIcon = report.type === 'late' ? 'fa-clock' : 'fa-user-times';
+        const typeLabel = report.type === 'late' ? 'Late' : 'Absent';
+        const dateFormatted = new Date(report.absenceDate).toLocaleDateString('en-NZ', {
+            weekday: 'short',
+            day: 'numeric',
+            month: 'short'
+        });
+
+        return `
+            <div class="report-card ${statusClass}">
+                <div class="report-type-icon ${report.type}">
+                    <i class="fas ${typeIcon}"></i>
+                </div>
+                <div class="report-info">
+                    <h5>${report.studentName}</h5>
+                    <p>${typeLabel} - ${dateFormatted}</p>
+                    <span class="report-reason">${report.reason}</span>
+                </div>
+                <div class="report-status">
+                    <span class="status-badge ${statusClass}">${statusLabel}</span>
+                </div>
+            </div>
+        `;
+    }).join('');
 }
 
 // ===== Render Functions =====
