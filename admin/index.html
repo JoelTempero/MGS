@@ -417,7 +417,38 @@
                             <p>Send instant notifications to subscribed devices</p>
                         </div>
                     </div>
-                    
+
+                    <!-- Quick Templates -->
+                    <div class="templates-section">
+                        <h4><i class="fas fa-magic"></i> Quick Templates</h4>
+                        <div class="templates-grid" id="templatesGrid">
+                            <button type="button" class="template-card" data-template="closure">
+                                <i class="fas fa-door-closed"></i>
+                                <span>School Closure</span>
+                            </button>
+                            <button type="button" class="template-card" data-template="event-reminder">
+                                <i class="fas fa-calendar-check"></i>
+                                <span>Event Reminder</span>
+                            </button>
+                            <button type="button" class="template-card" data-template="sport-update">
+                                <i class="fas fa-trophy"></i>
+                                <span>Sport Update</span>
+                            </button>
+                            <button type="button" class="template-card" data-template="newsletter">
+                                <i class="fas fa-newspaper"></i>
+                                <span>Newsletter Ready</span>
+                            </button>
+                            <button type="button" class="template-card" data-template="weather">
+                                <i class="fas fa-cloud-sun-rain"></i>
+                                <span>Weather Alert</span>
+                            </button>
+                            <button type="button" class="template-card" data-template="custom">
+                                <i class="fas fa-edit"></i>
+                                <span>Custom</span>
+                            </button>
+                        </div>
+                    </div>
+
                     <div class="push-form-container">
                         <form id="pushNotificationForm" class="push-form">
                             <div class="form-group">
@@ -498,9 +529,26 @@
                                 <button type="button" class="btn btn-outline" onclick="clearPushForm()">
                                     <i class="fas fa-times"></i> Clear
                                 </button>
+                                <button type="button" class="btn btn-secondary" onclick="testNotification()">
+                                    <i class="fas fa-mobile-alt"></i> Test on Device
+                                </button>
                                 <button type="submit" class="btn btn-primary">
                                     <i class="fas fa-paper-plane"></i> Send Notification
                                 </button>
+                            </div>
+
+                            <!-- Schedule Option -->
+                            <div class="schedule-option">
+                                <label class="schedule-toggle">
+                                    <input type="checkbox" id="scheduleToggle">
+                                    <span class="toggle-slider"></span>
+                                    <span class="schedule-label"><i class="fas fa-clock"></i> Schedule for later</span>
+                                </label>
+                                <div class="schedule-fields" id="scheduleFields" style="display: none;">
+                                    <input type="date" id="scheduleDate" min="">
+                                    <input type="time" id="scheduleTime" value="09:00">
+                                    <span class="schedule-note">Scheduled notifications are stored locally (demo mode)</span>
+                                </div>
                             </div>
                         </form>
                         
@@ -615,14 +663,40 @@
                         </div>
                         
                         <div class="settings-card">
-                            <h3><i class="fas fa-database"></i> Data</h3>
-                            <div class="setting-row">
-                                <span>Firebase Project ID</span>
-                                <input type="text" value="mgs-connect-demo" class="setting-input" disabled>
+                            <h3><i class="fas fa-database"></i> Data Management</h3>
+                            <p class="setting-description">Manage demo data stored in your browser's localStorage. Changes sync with the main app.</p>
+                            <div class="setting-buttons">
+                                <button class="btn btn-outline btn-sm" id="exportDataBtn" onclick="exportData()">
+                                    <i class="fas fa-download"></i> Export Data
+                                </button>
+                                <button class="btn btn-outline btn-sm" id="importDataBtn">
+                                    <i class="fas fa-upload"></i> Import Data
+                                </button>
+                                <input type="file" id="importDataFile" accept=".json" style="display: none;">
+                                <button class="btn btn-danger btn-sm" id="resetDataBtn" onclick="resetAllData()">
+                                    <i class="fas fa-trash-restore"></i> Reset to Defaults
+                                </button>
                             </div>
-                            <button class="btn btn-outline btn-sm">
-                                <i class="fas fa-sync"></i> Test Connection
-                            </button>
+                            <div class="data-info">
+                                <i class="fas fa-info-circle"></i>
+                                <span>Data is stored locally in your browser. Export regularly to backup.</span>
+                            </div>
+                        </div>
+
+                        <div class="settings-card">
+                            <h3><i class="fas fa-code"></i> Developer</h3>
+                            <div class="setting-row">
+                                <span>Demo Mode</span>
+                                <span class="badge badge-warning">Active</span>
+                            </div>
+                            <div class="setting-row">
+                                <span>Storage Key</span>
+                                <code class="setting-code">mgs_demo_data</code>
+                            </div>
+                            <div class="setting-row">
+                                <span>Version</span>
+                                <span>1.0.0-demo</span>
+                            </div>
                         </div>
                     </div>
                 </section>

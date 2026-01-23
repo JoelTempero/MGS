@@ -1,5 +1,8 @@
-// ===== Admin Demo Data =====
-const adminData = {
+// ===== Shared Data Storage (synced with main app) =====
+const STORAGE_KEY = 'mgs_demo_data';
+
+// Default admin data (used if no shared data exists)
+const defaultAdminData = {
     alerts: [
         { id: 1, type: 'emergency', title: 'School Closure Tomorrow', message: 'Due to extreme weather warnings, school will be closed tomorrow.', time: '2 hours ago', status: 'active', date: '7 Jan 2026' },
         { id: 2, type: 'sport', title: 'Swimming Sports Rescheduled', message: 'Year 7-8 swimming sports moved to Friday 10th January.', time: '5 hours ago', status: 'active', date: '7 Jan 2026' },
@@ -7,17 +10,17 @@ const adminData = {
         { id: 4, type: 'general', title: 'Uniform Shop Hours', message: 'Extended hours 8am-5pm from 27-31 January.', time: '2 days ago', status: 'active', date: '5 Jan 2026' }
     ],
     newsletters: [
-        { id: 1, title: 'Term 4 Week 10 Newsletter', category: 'all', date: '13 Dec 2025', downloads: 432 },
-        { id: 2, title: 'Primary School Update', category: 'primary', date: '10 Dec 2025', downloads: 189 },
-        { id: 3, title: 'Senior College Careers Newsletter', category: 'senior', date: '8 Dec 2025', downloads: 156 },
-        { id: 4, title: 'Middle School Newsletter', category: 'middle', date: '5 Dec 2025', downloads: 201 },
-        { id: 5, title: 'Term 4 Week 9 Newsletter', category: 'all', date: '6 Dec 2025', downloads: 398 }
+        { id: 1, title: 'Term 4 Week 10 Newsletter', category: 'all', date: '13 Dec 2025', downloads: 432, url: 'data/newsletters/placeholder.html' },
+        { id: 2, title: 'Primary School Update', category: 'primary', date: '10 Dec 2025', downloads: 189, url: 'data/newsletters/placeholder.html' },
+        { id: 3, title: 'Senior College Careers Newsletter', category: 'senior', date: '8 Dec 2025', downloads: 156, url: 'data/newsletters/placeholder.html' },
+        { id: 4, title: 'Middle School Newsletter', category: 'middle', date: '5 Dec 2025', downloads: 201, url: 'data/newsletters/placeholder.html' },
+        { id: 5, title: 'Term 4 Week 9 Newsletter', category: 'all', date: '6 Dec 2025', downloads: 398, url: 'data/newsletters/placeholder.html' }
     ],
     notices: [
-        { id: 1, title: 'Welcome Back!', category: 'all', author: 'Principal', status: 'active' },
-        { id: 2, title: 'New Student Orientation', category: 'middle', author: 'Year 7 Dean', status: 'active' },
-        { id: 3, title: 'Senior College Assembly', category: 'senior', author: 'Head of Senior College', status: 'active' },
-        { id: 4, title: 'Library Books Due', category: 'all', author: 'Librarian', status: 'active' }
+        { id: 1, title: 'Welcome Back!', content: 'Welcome back to all students and families for 2026. We hope you had a restful break.', category: 'all', author: 'Principal', status: 'active' },
+        { id: 2, title: 'New Student Orientation', content: 'All new Year 7 students please meet in the auditorium at 8:30am on Monday.', category: 'middle', author: 'Year 7 Dean', status: 'active' },
+        { id: 3, title: 'Senior College Assembly', content: 'Senior College assembly will be held in the Grange Theatre at 9:00am on Tuesday.', category: 'senior', author: 'Head of Senior College', status: 'active' },
+        { id: 4, title: 'Library Books Due', content: 'All library books from last year must be returned by Friday 31st January.', category: 'all', author: 'Librarian', status: 'active' }
     ],
     contacts: [
         { id: 1, name: 'Main Office', role: 'General Enquiries', phone: '+64 3 348 9826', email: 'office@middleton.school.nz' },
@@ -38,12 +41,43 @@ const adminData = {
         { id: 8, title: 'Grange Theatre', icon: 'fa-theater-masks', url: 'https://thegrangetheatre.nz/' }
     ],
     termDates: [
-        { term: 1, title: 'Term 1', start: 'Tuesday 28 January', end: 'Friday 17 April', weeks: 12 },
-        { term: 2, title: 'Term 2', start: 'Monday 4 May', end: 'Friday 10 July', weeks: 10 },
-        { term: 3, title: 'Term 3', start: 'Monday 27 July', end: 'Friday 25 September', weeks: 9 },
-        { term: 4, title: 'Term 4', start: 'Monday 12 October', end: 'Friday 11 December', weeks: 9 }
-    ]
+        { term: 1, title: 'Term 1', start: 'Tuesday 28 January', end: 'Friday 17 April', weeks: 12, holidays: ['Waitangi Day - 6 February', 'Good Friday - 3 April', 'Easter Monday - 6 April'] },
+        { term: 2, title: 'Term 2', start: 'Monday 4 May', end: 'Friday 10 July', weeks: 10, holidays: ["Queen's Birthday - 1 June"] },
+        { term: 3, title: 'Term 3', start: 'Monday 27 July', end: 'Friday 25 September', weeks: 9, holidays: [] },
+        { term: 4, title: 'Term 4', start: 'Monday 12 October', end: 'Friday 11 December', weeks: 9, holidays: ['Labour Day - 26 October'] }
+    ],
+    notifications: [],
+    subscriptions: [],
+    events: []
 };
+
+// Load data from localStorage (shared with main app)
+function loadAdminData() {
+    try {
+        const stored = localStorage.getItem(STORAGE_KEY);
+        if (stored) {
+            const parsed = JSON.parse(stored);
+            // Merge with defaults to ensure all keys exist
+            return { ...defaultAdminData, ...parsed };
+        }
+    } catch (e) {
+        console.warn('Failed to load shared data:', e);
+    }
+    return JSON.parse(JSON.stringify(defaultAdminData));
+}
+
+// Save data to localStorage (shared with main app)
+function saveAdminData() {
+    try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(adminData));
+        console.log('Data saved to localStorage');
+    } catch (e) {
+        console.warn('Failed to save data:', e);
+    }
+}
+
+// Initialize admin data from shared storage
+let adminData = loadAdminData();
 
 // ===== DOM Elements =====
 const elements = {
@@ -156,16 +190,186 @@ function initModals() {
     });
 }
 
-function openModal(title, content) {
+// Current edit context
+let currentEditContext = { type: null, id: null };
+
+function openModal(title, content, editType = null, editId = null) {
     elements.modalTitle.textContent = title;
     elements.modalBody.innerHTML = content;
     elements.modal.classList.add('open');
-    
+    currentEditContext = { type: editType, id: editId };
+
     // Setup save handler
-    elements.modalSave.onclick = () => {
-        showToast('Changes saved successfully!', 'success');
+    elements.modalSave.onclick = () => handleModalSave();
+}
+
+function handleModalSave() {
+    const form = elements.modalBody.querySelector('form');
+    if (!form) {
         closeModal();
+        return;
+    }
+
+    const formData = new FormData(form);
+    const data = {};
+
+    // Get all form inputs
+    form.querySelectorAll('input, select, textarea').forEach(input => {
+        if (input.type === 'checkbox') {
+            data[input.name || input.id || 'checkbox'] = input.checked;
+        } else if (input.type === 'file') {
+            // Handle file input - in demo just use placeholder
+            data.url = '../data/newsletters/placeholder.html';
+        } else {
+            const key = input.name || input.placeholder?.toLowerCase().replace(/\s+/g, '_') || input.id;
+            if (key) data[key] = input.value;
+        }
+    });
+
+    // Determine what type of item we're saving
+    const title = elements.modalTitle.textContent;
+
+    if (title.includes('Alert')) {
+        saveAlert(data, currentEditContext.id);
+    } else if (title.includes('Newsletter')) {
+        saveNewsletter(data, currentEditContext.id);
+    } else if (title.includes('Notice')) {
+        saveNotice(data, currentEditContext.id);
+    } else if (title.includes('Contact')) {
+        saveContact(data, currentEditContext.id);
+    } else if (title.includes('Link')) {
+        saveLink(data, currentEditContext.id);
+    } else if (title.includes('Notification')) {
+        // Push notification - handle separately
+        showToast('Notification sent!', 'success');
+    }
+
+    closeModal();
+}
+
+// ===== CRUD Functions =====
+function saveAlert(data, editId = null) {
+    const alert = {
+        id: editId || getNextId(adminData.alerts),
+        type: data.alert_type || data.type || 'general',
+        title: data.alert_title || data.title || 'New Alert',
+        message: data.message || '',
+        time: 'Just now',
+        timestamp: new Date().toISOString(),
+        status: 'active',
+        date: new Date().toLocaleDateString('en-NZ', { day: 'numeric', month: 'short', year: 'numeric' })
     };
+
+    if (editId) {
+        const index = adminData.alerts.findIndex(a => a.id === editId);
+        if (index !== -1) adminData.alerts[index] = { ...adminData.alerts[index], ...alert };
+    } else {
+        adminData.alerts.unshift(alert);
+    }
+
+    saveAdminData();
+    renderDashboard();
+    renderAlertsTable();
+    updateNavBadge('alerts', adminData.alerts.length);
+    showToast(editId ? 'Alert updated!' : 'Alert created!', 'success');
+}
+
+function saveNewsletter(data, editId = null) {
+    const newsletter = {
+        id: editId || getNextId(adminData.newsletters),
+        title: data.newsletter_title || data.title || 'New Newsletter',
+        category: data.category || 'all',
+        date: new Date().toLocaleDateString('en-NZ', { day: 'numeric', month: 'short', year: 'numeric' }),
+        downloads: editId ? (adminData.newsletters.find(n => n.id === editId)?.downloads || 0) : 0,
+        url: data.url || '../data/newsletters/placeholder.html'
+    };
+
+    if (editId) {
+        const index = adminData.newsletters.findIndex(n => n.id === editId);
+        if (index !== -1) adminData.newsletters[index] = { ...adminData.newsletters[index], ...newsletter };
+    } else {
+        adminData.newsletters.unshift(newsletter);
+    }
+
+    saveAdminData();
+    renderNewslettersTable();
+    showToast(editId ? 'Newsletter updated!' : 'Newsletter uploaded!', 'success');
+}
+
+function saveNotice(data, editId = null) {
+    const notice = {
+        id: editId || getNextId(adminData.notices),
+        title: data.notice_title || data.title || 'New Notice',
+        content: data.content || '',
+        category: data.category || 'all',
+        author: data.author || 'Admin',
+        status: 'active'
+    };
+
+    if (editId) {
+        const index = adminData.notices.findIndex(n => n.id === editId);
+        if (index !== -1) adminData.notices[index] = { ...adminData.notices[index], ...notice };
+    } else {
+        adminData.notices.unshift(notice);
+    }
+
+    saveAdminData();
+    renderNoticesTable();
+    showToast(editId ? 'Notice updated!' : 'Notice created!', 'success');
+}
+
+function saveContact(data, editId = null) {
+    const contact = {
+        id: editId || getNextId(adminData.contacts),
+        name: data.name || data.contact_name || 'New Contact',
+        role: data.role || '',
+        phone: data.phone || '+64 3 348 9826',
+        email: data.email || ''
+    };
+
+    if (editId) {
+        const index = adminData.contacts.findIndex(c => c.id === editId);
+        if (index !== -1) adminData.contacts[index] = { ...adminData.contacts[index], ...contact };
+    } else {
+        adminData.contacts.push(contact);
+    }
+
+    saveAdminData();
+    renderContactsTable();
+    showToast(editId ? 'Contact updated!' : 'Contact added!', 'success');
+}
+
+function saveLink(data, editId = null) {
+    const link = {
+        id: editId || getNextId(adminData.links),
+        title: data.link_title || data.title || 'New Link',
+        url: data.url || 'https://',
+        icon: data.icon || data['icon_(font_awesome_class)'] || 'fa-link'
+    };
+
+    if (editId) {
+        const index = adminData.links.findIndex(l => l.id === editId);
+        if (index !== -1) adminData.links[index] = { ...adminData.links[index], ...link };
+    } else {
+        adminData.links.push(link);
+    }
+
+    saveAdminData();
+    renderLinksGrid();
+    showToast(editId ? 'Link updated!' : 'Link added!', 'success');
+}
+
+function getNextId(array) {
+    if (!array || array.length === 0) return 1;
+    return Math.max(...array.map(item => item.id || 0)) + 1;
+}
+
+function updateNavBadge(section, count) {
+    const badge = document.querySelector(`[data-section="${section}"] .nav-badge`);
+    if (badge) {
+        badge.textContent = count;
+        badge.style.display = count > 0 ? 'inline-flex' : 'none';
+    }
 }
 
 function closeModal() {
@@ -173,30 +377,31 @@ function closeModal() {
 }
 
 // ===== Form Templates =====
-function getAlertForm() {
+function getAlertForm(existingData = null) {
+    const data = existingData || {};
     return `
         <form>
             <div class="form-group">
                 <label>Alert Title</label>
-                <input type="text" placeholder="Enter alert title">
+                <input type="text" name="title" placeholder="Enter alert title" value="${data.title || ''}">
             </div>
             <div class="form-group">
                 <label>Alert Type</label>
-                <select>
-                    <option value="emergency">Emergency</option>
-                    <option value="general">General</option>
-                    <option value="sport">Sport</option>
-                    <option value="performing-arts">Performing Arts</option>
+                <select name="type">
+                    <option value="emergency" ${data.type === 'emergency' ? 'selected' : ''}>Emergency</option>
+                    <option value="general" ${data.type === 'general' ? 'selected' : ''}>General</option>
+                    <option value="sport" ${data.type === 'sport' ? 'selected' : ''}>Sport</option>
+                    <option value="performing-arts" ${data.type === 'performing-arts' ? 'selected' : ''}>Performing Arts</option>
                 </select>
             </div>
             <div class="form-group">
                 <label>Message</label>
-                <textarea placeholder="Enter alert message"></textarea>
+                <textarea name="message" placeholder="Enter alert message">${data.message || ''}</textarea>
             </div>
             <div class="form-group">
                 <label>Send Push Notification</label>
                 <label class="toggle">
-                    <input type="checkbox" checked>
+                    <input type="checkbox" name="sendPush" ${!existingData ? 'checked' : ''}>
                     <span class="toggle-slider"></span>
                 </label>
             </div>
@@ -204,95 +409,99 @@ function getAlertForm() {
     `;
 }
 
-function getNewsletterForm() {
+function getNewsletterForm(existingData = null) {
+    const data = existingData || {};
     return `
         <form>
             <div class="form-group">
                 <label>Newsletter Title</label>
-                <input type="text" placeholder="e.g., Term 1 Week 2 Newsletter">
+                <input type="text" name="title" placeholder="e.g., Term 1 Week 2 Newsletter" value="${data.title || ''}">
             </div>
             <div class="form-group">
                 <label>Category</label>
-                <select>
-                    <option value="all">All School</option>
-                    <option value="primary">Primary School</option>
-                    <option value="middle">Middle School</option>
-                    <option value="senior">Senior College</option>
+                <select name="category">
+                    <option value="all" ${data.category === 'all' ? 'selected' : ''}>All School</option>
+                    <option value="primary" ${data.category === 'primary' ? 'selected' : ''}>Primary School</option>
+                    <option value="middle" ${data.category === 'middle' ? 'selected' : ''}>Middle School</option>
+                    <option value="senior" ${data.category === 'senior' ? 'selected' : ''}>Senior College</option>
                 </select>
             </div>
             <div class="form-group">
-                <label>Upload PDF</label>
-                <input type="file" accept=".pdf">
+                <label>Upload PDF ${existingData ? '(leave empty to keep existing)' : ''}</label>
+                <input type="file" name="file" accept=".pdf">
             </div>
         </form>
     `;
 }
 
-function getNoticeForm() {
+function getNoticeForm(existingData = null) {
+    const data = existingData || {};
     return `
         <form>
             <div class="form-group">
                 <label>Notice Title</label>
-                <input type="text" placeholder="Enter notice title">
+                <input type="text" name="title" placeholder="Enter notice title" value="${data.title || ''}">
             </div>
             <div class="form-group">
                 <label>Category</label>
-                <select>
-                    <option value="all">All School</option>
-                    <option value="primary">Primary School</option>
-                    <option value="middle">Middle School</option>
-                    <option value="senior">Senior College</option>
+                <select name="category">
+                    <option value="all" ${data.category === 'all' ? 'selected' : ''}>All School</option>
+                    <option value="primary" ${data.category === 'primary' ? 'selected' : ''}>Primary School</option>
+                    <option value="middle" ${data.category === 'middle' ? 'selected' : ''}>Middle School</option>
+                    <option value="senior" ${data.category === 'senior' ? 'selected' : ''}>Senior College</option>
                 </select>
             </div>
             <div class="form-group">
                 <label>Content</label>
-                <textarea placeholder="Enter notice content"></textarea>
+                <textarea name="content" placeholder="Enter notice content">${data.content || ''}</textarea>
             </div>
             <div class="form-group">
                 <label>Author</label>
-                <input type="text" placeholder="e.g., Principal">
+                <input type="text" name="author" placeholder="e.g., Principal" value="${data.author || ''}">
             </div>
         </form>
     `;
 }
 
-function getContactForm() {
+function getContactForm(existingData = null) {
+    const data = existingData || {};
     return `
         <form>
             <div class="form-group">
                 <label>Name</label>
-                <input type="text" placeholder="Contact name">
+                <input type="text" name="name" placeholder="Contact name" value="${data.name || ''}">
             </div>
             <div class="form-group">
                 <label>Role</label>
-                <input type="text" placeholder="e.g., Head of Department">
+                <input type="text" name="role" placeholder="e.g., Head of Department" value="${data.role || ''}">
             </div>
             <div class="form-group">
                 <label>Phone</label>
-                <input type="tel" placeholder="+64 3 348 9826">
+                <input type="tel" name="phone" placeholder="+64 3 348 9826" value="${data.phone || ''}">
             </div>
             <div class="form-group">
                 <label>Email</label>
-                <input type="email" placeholder="email@middleton.school.nz">
+                <input type="email" name="email" placeholder="email@middleton.school.nz" value="${data.email || ''}">
             </div>
         </form>
     `;
 }
 
-function getLinkForm() {
+function getLinkForm(existingData = null) {
+    const data = existingData || {};
     return `
         <form>
             <div class="form-group">
                 <label>Link Title</label>
-                <input type="text" placeholder="e.g., Parent Portal">
+                <input type="text" name="title" placeholder="e.g., Parent Portal" value="${data.title || ''}">
             </div>
             <div class="form-group">
                 <label>URL</label>
-                <input type="url" placeholder="https://...">
+                <input type="url" name="url" placeholder="https://..." value="${data.url || ''}">
             </div>
             <div class="form-group">
                 <label>Icon (Font Awesome class)</label>
-                <input type="text" placeholder="e.g., fa-globe">
+                <input type="text" name="icon" placeholder="e.g., fa-globe" value="${data.icon || ''}">
             </div>
         </form>
     `;
@@ -359,19 +568,18 @@ function renderAllTables() {
 
 function renderAlertsTable() {
     const tbody = document.getElementById('alertsTable');
-    const icons = {
-        emergency: 'fa-exclamation-triangle',
-        general: 'fa-info-circle',
-        sport: 'fa-running',
-        'performing-arts': 'fa-music'
-    };
+
+    if (adminData.alerts.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" class="empty-row">No alerts yet. Click "Add Alert" to create one.</td></tr>';
+        return;
+    }
 
     tbody.innerHTML = adminData.alerts.map(alert => `
         <tr>
             <td><strong>${alert.title}</strong></td>
             <td><span class="type-badge ${alert.type}">${alert.type}</span></td>
-            <td>${alert.date}</td>
-            <td><span class="status-badge ${alert.status}">${alert.status}</span></td>
+            <td>${alert.date || 'N/A'}</td>
+            <td><span class="status-badge ${alert.status || 'active'}">${alert.status || 'active'}</span></td>
             <td>
                 <div class="action-btns">
                     <button class="action-btn edit" onclick="editAlert(${alert.id})"><i class="fas fa-edit"></i></button>
@@ -385,15 +593,20 @@ function renderAlertsTable() {
 function renderNewslettersTable() {
     const tbody = document.getElementById('newslettersTable');
 
+    if (adminData.newsletters.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" class="empty-row">No newsletters yet. Click "Add Newsletter" to create one.</td></tr>';
+        return;
+    }
+
     tbody.innerHTML = adminData.newsletters.map(newsletter => `
         <tr>
             <td><strong>${newsletter.title}</strong></td>
             <td><span class="type-badge ${newsletter.category}">${newsletter.category}</span></td>
             <td>${newsletter.date}</td>
-            <td>${newsletter.downloads}</td>
+            <td>${newsletter.downloads || 0}</td>
             <td>
                 <div class="action-btns">
-                    <button class="action-btn edit"><i class="fas fa-edit"></i></button>
+                    <button class="action-btn edit" onclick="editNewsletter(${newsletter.id})"><i class="fas fa-edit"></i></button>
                     <button class="action-btn delete" onclick="deleteItem('newsletter', ${newsletter.id})"><i class="fas fa-trash"></i></button>
                 </div>
             </td>
@@ -404,15 +617,20 @@ function renderNewslettersTable() {
 function renderNoticesTable() {
     const tbody = document.getElementById('noticesTable');
 
+    if (adminData.notices.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" class="empty-row">No notices yet. Click "Add Notice" to create one.</td></tr>';
+        return;
+    }
+
     tbody.innerHTML = adminData.notices.map(notice => `
         <tr>
             <td><strong>${notice.title}</strong></td>
             <td><span class="type-badge ${notice.category}">${notice.category}</span></td>
             <td>${notice.author}</td>
-            <td><span class="status-badge ${notice.status}">${notice.status}</span></td>
+            <td><span class="status-badge ${notice.status || 'active'}">${notice.status || 'active'}</span></td>
             <td>
                 <div class="action-btns">
-                    <button class="action-btn edit"><i class="fas fa-edit"></i></button>
+                    <button class="action-btn edit" onclick="editNotice(${notice.id})"><i class="fas fa-edit"></i></button>
                     <button class="action-btn delete" onclick="deleteItem('notice', ${notice.id})"><i class="fas fa-trash"></i></button>
                 </div>
             </td>
@@ -423,6 +641,11 @@ function renderNoticesTable() {
 function renderContactsTable() {
     const tbody = document.getElementById('contactsTable');
 
+    if (adminData.contacts.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" class="empty-row">No contacts yet. Click "Add Contact" to create one.</td></tr>';
+        return;
+    }
+
     tbody.innerHTML = adminData.contacts.map(contact => `
         <tr>
             <td><strong>${contact.name}</strong></td>
@@ -431,7 +654,7 @@ function renderContactsTable() {
             <td>${contact.email}</td>
             <td>
                 <div class="action-btns">
-                    <button class="action-btn edit"><i class="fas fa-edit"></i></button>
+                    <button class="action-btn edit" onclick="editContact(${contact.id})"><i class="fas fa-edit"></i></button>
                     <button class="action-btn delete" onclick="deleteItem('contact', ${contact.id})"><i class="fas fa-trash"></i></button>
                 </div>
             </td>
@@ -442,6 +665,11 @@ function renderContactsTable() {
 function renderLinksGrid() {
     const container = document.getElementById('linksAdminGrid');
 
+    if (adminData.links.length === 0) {
+        container.innerHTML = '<div class="empty-state"><p>No links yet. Click "Add Link" to create one.</p></div>';
+        return;
+    }
+
     container.innerHTML = adminData.links.map(link => `
         <div class="link-admin-card">
             <div class="link-admin-icon">
@@ -450,7 +678,7 @@ function renderLinksGrid() {
             <h4>${link.title}</h4>
             <p>${link.url}</p>
             <div class="link-admin-actions">
-                <button class="btn btn-sm btn-outline"><i class="fas fa-edit"></i></button>
+                <button class="btn btn-sm btn-outline" onclick="editLink(${link.id})"><i class="fas fa-edit"></i></button>
                 <button class="btn btn-sm btn-danger" onclick="deleteItem('link', ${link.id})"><i class="fas fa-trash"></i></button>
             </div>
         </div>
@@ -490,14 +718,77 @@ function renderTermDatesAdmin() {
 function editAlert(id) {
     const alert = adminData.alerts.find(a => a.id === id);
     if (alert) {
-        openModal('Edit Alert', getAlertForm());
+        openModal('Edit Alert', getAlertForm(alert), 'alert', id);
+    }
+}
+
+function editNewsletter(id) {
+    const newsletter = adminData.newsletters.find(n => n.id === id);
+    if (newsletter) {
+        openModal('Edit Newsletter', getNewsletterForm(newsletter), 'newsletter', id);
+    }
+}
+
+function editNotice(id) {
+    const notice = adminData.notices.find(n => n.id === id);
+    if (notice) {
+        openModal('Edit Notice', getNoticeForm(notice), 'notice', id);
+    }
+}
+
+function editContact(id) {
+    const contact = adminData.contacts.find(c => c.id === id);
+    if (contact) {
+        openModal('Edit Contact', getContactForm(contact), 'contact', id);
+    }
+}
+
+function editLink(id) {
+    const link = adminData.links.find(l => l.id === id);
+    if (link) {
+        openModal('Edit Link', getLinkForm(link), 'link', id);
     }
 }
 
 function deleteItem(type, id) {
     if (confirm(`Are you sure you want to delete this ${type}?`)) {
-        showToast(`${type.charAt(0).toUpperCase() + type.slice(1)} deleted successfully`, 'success');
-        // In production, this would delete from Firebase
+        let dataKey;
+        let renderFn;
+
+        switch(type) {
+            case 'alert':
+                dataKey = 'alerts';
+                renderFn = () => { renderDashboard(); renderAlertsTable(); };
+                break;
+            case 'newsletter':
+                dataKey = 'newsletters';
+                renderFn = renderNewslettersTable;
+                break;
+            case 'notice':
+                dataKey = 'notices';
+                renderFn = renderNoticesTable;
+                break;
+            case 'contact':
+                dataKey = 'contacts';
+                renderFn = renderContactsTable;
+                break;
+            case 'link':
+                dataKey = 'links';
+                renderFn = renderLinksGrid;
+                break;
+            default:
+                return;
+        }
+
+        // Find and remove the item
+        const index = adminData[dataKey].findIndex(item => item.id === id);
+        if (index !== -1) {
+            adminData[dataKey].splice(index, 1);
+            saveAdminData();
+            renderFn();
+            updateNavBadge(dataKey, adminData[dataKey].length);
+            showToast(`${type.charAt(0).toUpperCase() + type.slice(1)} deleted successfully`, 'success');
+        }
     }
 }
 
@@ -522,26 +813,188 @@ function showToast(message, type = 'info') {
 const FIREBASE_PROJECT_ID = 'middleton-grange-a699d';
 const ADMIN_KEY = 'mgs-admin-2026'; // Simple key for demo - use proper auth in production
 
+// Notification Templates
+const notificationTemplates = {
+    'closure': {
+        title: 'School Closure - [DATE]',
+        body: 'Due to [REASON], school will be closed on [DATE]. Please check your email for further updates.',
+        type: 'emergency',
+        topic: 'emergency'
+    },
+    'event-reminder': {
+        title: '[EVENT NAME] - Tomorrow',
+        body: 'Reminder: [EVENT NAME] is happening tomorrow at [TIME]. [LOCATION]. We look forward to seeing you there!',
+        type: 'general',
+        topic: 'general'
+    },
+    'sport-update': {
+        title: 'Sport Update: [SPORT]',
+        body: '[TEAM] vs [OPPONENT] - [RESULT/TIME]. [VENUE]. Come support our teams!',
+        type: 'sport',
+        topic: 'sport'
+    },
+    'newsletter': {
+        title: 'New Newsletter Available',
+        body: 'The latest school newsletter is now available in the MGS Connect app. Tap to read the latest updates from our school community.',
+        type: 'general',
+        topic: 'general'
+    },
+    'weather': {
+        title: 'Weather Advisory',
+        body: 'Due to [WEATHER CONDITION], please ensure students [ACTION]. Check the app for any schedule changes.',
+        type: 'emergency',
+        topic: 'emergency'
+    },
+    'custom': {
+        title: '',
+        body: '',
+        type: 'general',
+        topic: 'general'
+    }
+};
+
 function initPushNotifications() {
     const form = document.getElementById('pushNotificationForm');
     const titleInput = document.getElementById('pushTitle');
     const bodyInput = document.getElementById('pushBody');
-    
+
     if (!form) return;
-    
+
     // Live preview
     titleInput?.addEventListener('input', (e) => {
         document.getElementById('previewTitle').textContent = e.target.value || 'Notification Title';
         document.getElementById('titleCount').textContent = e.target.value.length;
     });
-    
+
     bodyInput?.addEventListener('input', (e) => {
         document.getElementById('previewBody').textContent = e.target.value || 'Your message will appear here...';
         document.getElementById('bodyCount').textContent = e.target.value.length;
     });
-    
+
+    // Type selector updates preview style
+    document.querySelectorAll('input[name="notificationType"]').forEach(radio => {
+        radio.addEventListener('change', (e) => {
+            const preview = document.querySelector('.notification-preview');
+            preview.className = 'notification-preview ' + e.target.value;
+        });
+    });
+
+    // Template selection
+    document.querySelectorAll('.template-card').forEach(card => {
+        card.addEventListener('click', () => {
+            const templateId = card.dataset.template;
+            applyTemplate(templateId);
+
+            // Update active state
+            document.querySelectorAll('.template-card').forEach(c => c.classList.remove('active'));
+            card.classList.add('active');
+        });
+    });
+
+    // Schedule toggle
+    const scheduleToggle = document.getElementById('scheduleToggle');
+    const scheduleFields = document.getElementById('scheduleFields');
+    const scheduleDate = document.getElementById('scheduleDate');
+
+    if (scheduleToggle && scheduleFields) {
+        // Set min date to today
+        if (scheduleDate) {
+            scheduleDate.min = new Date().toISOString().split('T')[0];
+            scheduleDate.value = new Date().toISOString().split('T')[0];
+        }
+
+        scheduleToggle.addEventListener('change', () => {
+            scheduleFields.style.display = scheduleToggle.checked ? 'flex' : 'none';
+        });
+    }
+
     // Form submission
     form.addEventListener('submit', handlePushSubmit);
+}
+
+function applyTemplate(templateId) {
+    const template = notificationTemplates[templateId];
+    if (!template) return;
+
+    const titleInput = document.getElementById('pushTitle');
+    const bodyInput = document.getElementById('pushBody');
+    const topicSelect = document.getElementById('pushTopic');
+
+    if (titleInput) {
+        titleInput.value = template.title;
+        titleInput.dispatchEvent(new Event('input'));
+    }
+
+    if (bodyInput) {
+        bodyInput.value = template.body;
+        bodyInput.dispatchEvent(new Event('input'));
+    }
+
+    if (topicSelect && template.topic) {
+        topicSelect.value = template.topic;
+    }
+
+    // Set notification type
+    const typeRadio = document.querySelector(`input[name="notificationType"][value="${template.type}"]`);
+    if (typeRadio) {
+        typeRadio.checked = true;
+        typeRadio.dispatchEvent(new Event('change'));
+    }
+
+    // Focus on title for editing
+    if (titleInput && template.title) {
+        titleInput.focus();
+        // Select placeholder text if present
+        if (template.title.includes('[')) {
+            const start = template.title.indexOf('[');
+            const end = template.title.indexOf(']') + 1;
+            titleInput.setSelectionRange(start, end);
+        }
+    }
+}
+
+function testNotification() {
+    const title = document.getElementById('pushTitle')?.value || 'Test Notification';
+    const body = document.getElementById('pushBody')?.value || 'This is a test notification from MGS Connect Admin.';
+    const type = document.querySelector('input[name="notificationType"]:checked')?.value || 'general';
+
+    // Check if browser supports notifications
+    if (!('Notification' in window)) {
+        showToast('Notifications are not supported in this browser', 'error');
+        return;
+    }
+
+    // Request permission if needed
+    if (Notification.permission === 'default') {
+        Notification.requestPermission().then(permission => {
+            if (permission === 'granted') {
+                showTestNotification(title, body, type);
+            } else {
+                showToast('Notification permission denied', 'error');
+            }
+        });
+    } else if (Notification.permission === 'granted') {
+        showTestNotification(title, body, type);
+    } else {
+        showToast('Notifications are blocked. Please enable them in browser settings.', 'error');
+    }
+}
+
+function showTestNotification(title, body, type) {
+    const notification = new Notification(title, {
+        body: body,
+        icon: '../icons/icon-192.svg',
+        badge: '../icons/icon-72.svg',
+        tag: 'mgs-test-' + Date.now(),
+        requireInteraction: type === 'emergency'
+    });
+
+    notification.onclick = () => {
+        window.focus();
+        notification.close();
+    };
+
+    showToast('Test notification sent to this device!', 'success');
 }
 
 async function handlePushSubmit(e) {
@@ -651,4 +1104,116 @@ function addToHistory(topic, title, body, type) {
 document.addEventListener('DOMContentLoaded', () => {
     // Add push-notifications to the section navigation
     initPushNotifications();
+    initDataManagement();
 });
+
+// ===== Data Management =====
+function initDataManagement() {
+    // Add reset button handler if it exists
+    const resetBtn = document.getElementById('resetDataBtn');
+    if (resetBtn) {
+        resetBtn.addEventListener('click', resetAllData);
+    }
+
+    // Add export button handler
+    const exportBtn = document.getElementById('exportDataBtn');
+    if (exportBtn) {
+        exportBtn.addEventListener('click', exportData);
+    }
+
+    // Add import button handler
+    const importBtn = document.getElementById('importDataBtn');
+    if (importBtn) {
+        importBtn.addEventListener('click', () => {
+            document.getElementById('importDataFile')?.click();
+        });
+    }
+
+    const importFile = document.getElementById('importDataFile');
+    if (importFile) {
+        importFile.addEventListener('change', importData);
+    }
+
+    // Update dashboard stats
+    updateDashboardStats();
+}
+
+function resetAllData() {
+    if (confirm('Are you sure you want to reset all data to defaults? This cannot be undone.')) {
+        localStorage.removeItem(STORAGE_KEY);
+        adminData = loadAdminData();
+        renderDashboard();
+        renderAllTables();
+        updateDashboardStats();
+        showToast('All data has been reset to defaults', 'success');
+    }
+}
+
+function exportData() {
+    const dataStr = JSON.stringify(adminData, null, 2);
+    const blob = new Blob([dataStr], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `mgs-data-${new Date().toISOString().split('T')[0]}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showToast('Data exported successfully', 'success');
+}
+
+function importData(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+        try {
+            const imported = JSON.parse(event.target.result);
+            // Validate structure
+            if (imported.alerts && imported.newsletters) {
+                adminData = { ...defaultAdminData, ...imported };
+                saveAdminData();
+                renderDashboard();
+                renderAllTables();
+                updateDashboardStats();
+                showToast('Data imported successfully', 'success');
+            } else {
+                showToast('Invalid data format', 'error');
+            }
+        } catch (err) {
+            showToast('Failed to parse import file', 'error');
+        }
+    };
+    reader.readAsText(file);
+    e.target.value = ''; // Reset input
+}
+
+function updateDashboardStats() {
+    // Update stat cards if they exist
+    const alertsStat = document.querySelector('[data-stat="alerts"]');
+    const newslettersStat = document.querySelector('[data-stat="newsletters"]');
+    const noticesStat = document.querySelector('[data-stat="notices"]');
+    const contactsStat = document.querySelector('[data-stat="contacts"]');
+
+    if (alertsStat) alertsStat.textContent = adminData.alerts.length;
+    if (newslettersStat) newslettersStat.textContent = adminData.newsletters.length;
+    if (noticesStat) noticesStat.textContent = adminData.notices.length;
+    if (contactsStat) contactsStat.textContent = adminData.contacts.length;
+
+    // Update nav badges
+    updateNavBadge('alerts', adminData.alerts.length);
+}
+
+// Expose functions globally for use in HTML
+window.editAlert = editAlert;
+window.editNewsletter = editNewsletter;
+window.editNotice = editNotice;
+window.editContact = editContact;
+window.editLink = editLink;
+window.deleteItem = deleteItem;
+window.resetAllData = resetAllData;
+window.exportData = exportData;
+window.testNotification = testNotification;
+window.clearPushForm = clearPushForm;

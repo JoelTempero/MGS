@@ -23,8 +23,8 @@ messaging.onBackgroundMessage((payload) => {
     const notificationTitle = payload.notification?.title || payload.data?.title || 'MGS Connect';
     const notificationOptions = {
         body: payload.notification?.body || payload.data?.body || '',
-        icon: '/icons/icon-192.png',
-        badge: '/icons/badge-72.png',
+        icon: '/icons/icon-192.svg',
+        badge: '/icons/icon-72.svg',
         tag: payload.data?.tag || 'mgs-notification',
         data: payload.data || {},
         vibrate: [100, 50, 100],

@@ -1,52 +1,31 @@
-// ===== Demo Data =====
-const demoData = {
+// ===== Data Storage Keys =====
+const STORAGE_KEYS = {
+    DEMO_DATA: 'mgs_demo_data',
+    USER_PREFS: 'mgs_user_prefs',
+    DEMO_BANNER_CLOSED: 'mgs_demo_banner_closed'
+};
+
+// ===== Default Demo Data (fallback) =====
+const defaultDemoData = {
     alerts: [
-        {
-            id: 1,
-            type: 'emergency',
-            title: 'School Closure Tomorrow',
-            message: 'Due to extreme weather warnings, school will be closed tomorrow (8 January). Please check emails for updates.',
-            time: '2 hours ago',
-            timestamp: new Date()
-        },
-        {
-            id: 2,
-            type: 'sport',
-            title: 'Swimming Sports Rescheduled',
-            message: 'The Year 7-8 swimming sports have been moved to Friday 10th January due to pool maintenance.',
-            time: '5 hours ago',
-            timestamp: new Date()
-        },
-        {
-            id: 3,
-            type: 'performing-arts',
-            title: 'School Production Auditions',
-            message: 'Auditions for the 2026 school production "The Sound of Music" will be held next week. Sign up at the Performing Arts office.',
-            time: '1 day ago',
-            timestamp: new Date()
-        },
-        {
-            id: 4,
-            type: 'general',
-            title: 'Uniform Shop Hours',
-            message: 'The uniform shop will have extended hours (8am-5pm) from 27-31 January for back to school.',
-            time: '2 days ago',
-            timestamp: new Date()
-        }
+        { id: 1, type: 'emergency', title: 'School Closure Tomorrow', message: 'Due to extreme weather warnings, school will be closed tomorrow (8 January). Please check emails for updates.', time: '2 hours ago', timestamp: new Date().toISOString() },
+        { id: 2, type: 'sport', title: 'Swimming Sports Rescheduled', message: 'The Year 7-8 swimming sports have been moved to Friday 10th January due to pool maintenance.', time: '5 hours ago', timestamp: new Date().toISOString() },
+        { id: 3, type: 'performing-arts', title: 'School Production Auditions', message: 'Auditions for the 2026 school production "The Sound of Music" will be held next week. Sign up at the Performing Arts office.', time: '1 day ago', timestamp: new Date().toISOString() },
+        { id: 4, type: 'general', title: 'Uniform Shop Hours', message: 'The uniform shop will have extended hours (8am-5pm) from 27-31 January for back to school.', time: '2 days ago', timestamp: new Date().toISOString() }
     ],
     events: [
-        { id: 1, title: 'Term 1 Begins', date: new Date(2026, 0, 28), type: 'school' },
-        { id: 2, title: 'Waitangi Day', date: new Date(2026, 1, 6), type: 'holiday' },
-        { id: 3, title: 'Senior College Meet the Teachers', date: new Date(2026, 1, 12), type: 'meeting' },
-        { id: 4, title: 'Swimming Sports', date: new Date(2026, 1, 20), type: 'sport' },
-        { id: 5, title: 'Primary School Picnic', date: new Date(2026, 1, 27), type: 'event' }
+        { id: 1, title: 'Term 1 Begins', date: '2026-01-28', type: 'school' },
+        { id: 2, title: 'Waitangi Day', date: '2026-02-06', type: 'holiday' },
+        { id: 3, title: 'Senior College Meet the Teachers', date: '2026-02-12', type: 'meeting' },
+        { id: 4, title: 'Swimming Sports', date: '2026-02-20', type: 'sport' },
+        { id: 5, title: 'Primary School Picnic', date: '2026-02-27', type: 'event' }
     ],
     newsletters: [
-        { id: 1, title: 'Term 4 Week 10 Newsletter', date: '13 Dec 2025', category: 'all', url: '#' },
-        { id: 2, title: 'Primary School Update', date: '10 Dec 2025', category: 'primary', url: '#' },
-        { id: 3, title: 'Senior College Careers Newsletter', date: '8 Dec 2025', category: 'senior', url: '#' },
-        { id: 4, title: 'Middle School Newsletter', date: '5 Dec 2025', category: 'middle', url: '#' },
-        { id: 5, title: 'Term 4 Week 9 Newsletter', date: '6 Dec 2025', category: 'all', url: '#' }
+        { id: 1, title: 'Term 4 Week 10 Newsletter', date: '13 Dec 2025', category: 'all', url: 'data/newsletters/placeholder.html' },
+        { id: 2, title: 'Primary School Update', date: '10 Dec 2025', category: 'primary', url: 'data/newsletters/placeholder.html' },
+        { id: 3, title: 'Senior College Careers Newsletter', date: '8 Dec 2025', category: 'senior', url: 'data/newsletters/placeholder.html' },
+        { id: 4, title: 'Middle School Newsletter', date: '5 Dec 2025', category: 'middle', url: 'data/newsletters/placeholder.html' },
+        { id: 5, title: 'Term 4 Week 9 Newsletter', date: '6 Dec 2025', category: 'all', url: 'data/newsletters/placeholder.html' }
     ],
     notices: [
         { id: 1, title: 'Welcome Back!', content: 'Welcome back to all students and families for 2026. We hope you had a restful break.', category: 'all', author: 'Principal' },
@@ -75,38 +54,10 @@ const demoData = {
         { id: 8, title: 'Grange Theatre', icon: 'fa-theater-masks', url: 'https://thegrangetheatre.nz/' }
     ],
     termDates: [
-        {
-            term: 1,
-            title: 'Term 1',
-            start: 'Tuesday 28 January',
-            end: 'Friday 17 April',
-            weeks: 12,
-            holidays: ['Waitangi Day - 6 February', 'Good Friday - 3 April', 'Easter Monday - 6 April']
-        },
-        {
-            term: 2,
-            title: 'Term 2',
-            start: 'Monday 4 May',
-            end: 'Friday 10 July',
-            weeks: 10,
-            holidays: ["Queen's Birthday - 1 June"]
-        },
-        {
-            term: 3,
-            title: 'Term 3',
-            start: 'Monday 27 July',
-            end: 'Friday 25 September',
-            weeks: 9,
-            holidays: []
-        },
-        {
-            term: 4,
-            title: 'Term 4',
-            start: 'Monday 12 October',
-            end: 'Friday 11 December',
-            weeks: 9,
-            holidays: ['Labour Day - 26 October']
-        }
+        { term: 1, title: 'Term 1', start: 'Tuesday 28 January', end: 'Friday 17 April', weeks: 12, holidays: ['Waitangi Day - 6 February', 'Good Friday - 3 April', 'Easter Monday - 6 April'] },
+        { term: 2, title: 'Term 2', start: 'Monday 4 May', end: 'Friday 10 July', weeks: 10, holidays: ["Queen's Birthday - 1 June"] },
+        { term: 3, title: 'Term 3', start: 'Monday 27 July', end: 'Friday 25 September', weeks: 9, holidays: [] },
+        { term: 4, title: 'Term 4', start: 'Monday 12 October', end: 'Friday 11 December', weeks: 9, holidays: ['Labour Day - 26 October'] }
     ],
     subscriptions: [
         { id: 'primary', name: 'Primary School', description: 'Years 1-6 updates and events', enabled: true },
@@ -124,6 +75,111 @@ const demoData = {
         { id: 2, title: 'Swimming Sports Update', message: 'Rescheduled to Friday 10th January.', time: '5 hours ago', unread: true },
         { id: 3, title: 'Production Auditions', message: 'Sign up now for The Sound of Music!', time: '1 day ago', unread: true }
     ]
+};
+
+// ===== Demo Data (loaded from localStorage or defaults) =====
+let demoData = loadDemoData();
+
+// ===== Data Persistence Functions =====
+function loadDemoData() {
+    try {
+        const stored = localStorage.getItem(STORAGE_KEYS.DEMO_DATA);
+        if (stored) {
+            const parsed = JSON.parse(stored);
+            // Convert date strings back to Date objects for events
+            if (parsed.events) {
+                parsed.events = parsed.events.map(e => ({
+                    ...e,
+                    date: new Date(e.date)
+                }));
+            }
+            return parsed;
+        }
+    } catch (e) {
+        console.warn('Failed to load demo data from localStorage:', e);
+    }
+
+    // Return default data with proper Date objects
+    const data = JSON.parse(JSON.stringify(defaultDemoData));
+    data.events = data.events.map(e => ({
+        ...e,
+        date: new Date(e.date)
+    }));
+    return data;
+}
+
+function saveDemoData() {
+    try {
+        // Convert Date objects to strings for storage
+        const dataToStore = JSON.parse(JSON.stringify(demoData));
+        localStorage.setItem(STORAGE_KEYS.DEMO_DATA, JSON.stringify(dataToStore));
+    } catch (e) {
+        console.warn('Failed to save demo data to localStorage:', e);
+    }
+}
+
+function resetDemoData() {
+    localStorage.removeItem(STORAGE_KEYS.DEMO_DATA);
+    demoData = loadDemoData();
+    // Re-render all content
+    renderAlerts();
+    renderEvents();
+    renderNewsletters();
+    renderNotices();
+    renderContacts();
+    renderLinks();
+    renderTermDates();
+    renderSubscriptions();
+    renderNotificationPanel();
+    renderCalendar();
+    showToast('Demo data has been reset', 'success');
+}
+
+// Expose data functions globally for admin use
+window.MGSData = {
+    get: () => demoData,
+    save: saveDemoData,
+    reset: resetDemoData,
+    update: (key, value) => {
+        if (demoData.hasOwnProperty(key)) {
+            demoData[key] = value;
+            saveDemoData();
+            return true;
+        }
+        return false;
+    },
+    addItem: (key, item) => {
+        if (demoData[key] && Array.isArray(demoData[key])) {
+            const maxId = Math.max(0, ...demoData[key].map(i => i.id || 0));
+            item.id = maxId + 1;
+            demoData[key].push(item);
+            saveDemoData();
+            return item;
+        }
+        return null;
+    },
+    updateItem: (key, id, updates) => {
+        if (demoData[key] && Array.isArray(demoData[key])) {
+            const index = demoData[key].findIndex(i => i.id === id);
+            if (index !== -1) {
+                demoData[key][index] = { ...demoData[key][index], ...updates };
+                saveDemoData();
+                return demoData[key][index];
+            }
+        }
+        return null;
+    },
+    deleteItem: (key, id) => {
+        if (demoData[key] && Array.isArray(demoData[key])) {
+            const index = demoData[key].findIndex(i => i.id === id);
+            if (index !== -1) {
+                demoData[key].splice(index, 1);
+                saveDemoData();
+                return true;
+            }
+        }
+        return false;
+    }
 };
 
 // ===== App State =====
@@ -158,9 +214,69 @@ const elements = {
 // ===== Initialize App =====
 document.addEventListener('DOMContentLoaded', () => {
     initApp();
+    registerServiceWorker();
 });
 
+// ===== Service Worker Registration =====
+function registerServiceWorker() {
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/service-worker.js')
+            .then(registration => {
+                console.log('[App] Service Worker registered:', registration.scope);
+
+                // Check for updates
+                registration.addEventListener('updatefound', () => {
+                    const newWorker = registration.installing;
+                    newWorker.addEventListener('statechange', () => {
+                        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                            // New version available
+                            showToast('App update available! Refresh to update.', 'info');
+                        }
+                    });
+                });
+            })
+            .catch(error => {
+                console.warn('[App] Service Worker registration failed:', error);
+            });
+    }
+
+    // Offline detection
+    initOfflineDetection();
+}
+
+// ===== Offline Detection =====
+function initOfflineDetection() {
+    // Create offline indicator
+    const indicator = document.createElement('div');
+    indicator.className = 'offline-indicator';
+    indicator.innerHTML = '<i class="fas fa-exclamation-triangle"></i> You are offline';
+    document.body.appendChild(indicator);
+
+    function updateOnlineStatus() {
+        if (navigator.onLine) {
+            indicator.classList.remove('visible');
+        } else {
+            indicator.classList.add('visible');
+        }
+    }
+
+    window.addEventListener('online', () => {
+        updateOnlineStatus();
+        showToast('Back online!', 'success');
+    });
+
+    window.addEventListener('offline', () => {
+        updateOnlineStatus();
+    });
+
+    // Initial check
+    updateOnlineStatus();
+}
+
 function initApp() {
+    // Initialize demo banner
+    initDemoBanner();
+
     // Show splash screen then reveal app
     setTimeout(() => {
         elements.splashScreen.classList.add('hidden');
@@ -175,7 +291,7 @@ function initApp() {
     initNotifications();
     initLogin();
     initPages();
-    
+
     // Render initial content
     renderAlerts();
     renderEvents();
@@ -187,15 +303,15 @@ function initApp() {
     renderSubscriptions();
     renderNotificationPanel();
     renderCalendar();
-    
+
     // Listen for ICS calendar data to load
     window.addEventListener('icsCalendarLoaded', (e) => {
         console.log('📅 ICS Calendar data received:', e.detail);
-        
+
         // Re-render events and calendar with live data
         renderEvents();
         renderCalendar();
-        
+
         // Show notification about data source
         if (e.detail.source === 'live' && e.detail.events.length > 0) {
             showToast(`Loaded ${e.detail.events.length} events from school calendar`, 'success');
@@ -203,17 +319,66 @@ function initApp() {
     });
 }
 
+// ===== Demo Banner =====
+function initDemoBanner() {
+    const banner = document.getElementById('demoBanner');
+    const closeBtn = document.getElementById('closeDemoBanner');
+
+    if (!banner) return;
+
+    // Check if banner was previously closed
+    const bannerClosed = localStorage.getItem(STORAGE_KEYS.DEMO_BANNER_CLOSED);
+
+    if (bannerClosed) {
+        banner.classList.add('hidden');
+    } else {
+        document.body.classList.add('demo-mode');
+    }
+
+    // Handle close button
+    if (closeBtn) {
+        closeBtn.addEventListener('click', () => {
+            banner.classList.add('hidden');
+            document.body.classList.remove('demo-mode');
+            localStorage.setItem(STORAGE_KEYS.DEMO_BANNER_CLOSED, 'true');
+        });
+    }
+}
+
+// Function to show demo banner again (useful for testing)
+function showDemoBanner() {
+    const banner = document.getElementById('demoBanner');
+    if (banner) {
+        banner.classList.remove('hidden');
+        document.body.classList.add('demo-mode');
+        localStorage.removeItem(STORAGE_KEYS.DEMO_BANNER_CLOSED);
+    }
+}
+
 // ===== Greeting =====
 function setGreeting() {
-    const hour = new Date().getHours();
+    const now = new Date();
+    const hour = now.getHours();
     const greetingEl = document.getElementById('greetingText');
-    
+
+    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const dayName = days[now.getDay()];
+
+    let timeGreeting;
     if (hour < 12) {
-        greetingEl.textContent = 'Good Morning';
+        timeGreeting = 'Good Morning';
     } else if (hour < 17) {
-        greetingEl.textContent = 'Good Afternoon';
+        timeGreeting = 'Good Afternoon';
     } else {
-        greetingEl.textContent = 'Good Evening';
+        timeGreeting = 'Good Evening';
+    }
+
+    greetingEl.textContent = `${timeGreeting}`;
+
+    // Also update the hero title to include day
+    const heroTitle = document.querySelector('.hero-title');
+    if (heroTitle) {
+        heroTitle.textContent = `Happy ${dayName}!`;
     }
 }
 
@@ -263,11 +428,21 @@ function closeSideNav() {
 function navigateTo(page) {
     closeSideNav();
     closeNotificationPanel();
-    
-    // Update active page
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+
+    const currentPage = document.querySelector('.page.active');
     const targetPage = document.getElementById(`page-${page}`);
-    if (targetPage) {
+
+    if (!targetPage || currentPage === targetPage) return;
+
+    // Smooth page transition
+    if (currentPage) {
+        currentPage.classList.add('exiting');
+
+        setTimeout(() => {
+            currentPage.classList.remove('active', 'exiting');
+            targetPage.classList.add('active');
+        }, 200);
+    } else {
         targetPage.classList.add('active');
     }
 
@@ -327,17 +502,30 @@ function updateNotificationBadge() {
 
 function renderNotificationPanel() {
     const container = document.getElementById('notificationPanelContent');
-    
-    container.innerHTML = demoData.notifications.map(n => `
-        <div class="notification-item ${n.unread ? 'unread' : ''}" data-id="${n.id}">
-            <div class="notification-dot"></div>
-            <div class="notification-text">
-                <h4>${n.title}</h4>
-                <p>${n.message}</p>
-                <span class="time">${n.time}</span>
+
+    if (demoData.notifications.length === 0) {
+        showEmptyState(container, 'notifications');
+        updateNotificationBadge();
+        return;
+    }
+
+    container.innerHTML = demoData.notifications.map(n => {
+        // Use timestamp if available, otherwise use the time string
+        const timeDisplay = n.timestamp
+            ? formatTimestamp(n.timestamp)
+            : `<span class="timestamp-relative">${n.time}</span>`;
+
+        return `
+            <div class="notification-item ${n.unread ? 'unread' : ''}" data-id="${n.id}">
+                <div class="notification-dot"></div>
+                <div class="notification-text">
+                    <h4>${n.title}</h4>
+                    <p>${n.message}</p>
+                    <span class="time"><i class="far fa-clock"></i> ${timeDisplay}</span>
+                </div>
             </div>
-        </div>
-    `).join('');
+        `;
+    }).join('');
 
     updateNotificationBadge();
 }
@@ -414,7 +602,10 @@ function initPages() {
     });
 
     // Save subscriptions
-    document.getElementById('saveSubscriptions').addEventListener('click', saveSubscriptions);
+    const saveSubsBtn = document.getElementById('saveSubscriptions');
+    if (saveSubsBtn) {
+        saveSubsBtn.addEventListener('click', saveSubscriptions);
+    }
 }
 
 // ===== Render Functions =====
@@ -422,19 +613,31 @@ function renderAlerts(filter = 'all') {
     // Preview on home page
     const previewContainer = document.getElementById('alertsPreview');
     const previewAlerts = demoData.alerts.slice(0, 2);
-    
-    previewContainer.innerHTML = previewAlerts.map(alert => createAlertCard(alert)).join('');
+
+    if (previewAlerts.length === 0) {
+        showEmptyState(previewContainer, 'alerts');
+    } else {
+        previewContainer.innerHTML = previewAlerts.map(alert => createAlertCard(alert)).join('');
+    }
 
     // Update badge
-    document.getElementById('alertsBadge').textContent = demoData.alerts.length;
+    const badge = document.getElementById('alertsBadge');
+    if (badge) {
+        badge.textContent = demoData.alerts.length;
+        badge.style.display = demoData.alerts.length > 0 ? 'flex' : 'none';
+    }
 
     // Full list on alerts page
     const listContainer = document.getElementById('alertsList');
-    const filteredAlerts = filter === 'all' 
-        ? demoData.alerts 
+    const filteredAlerts = filter === 'all'
+        ? demoData.alerts
         : demoData.alerts.filter(a => a.type === filter);
-    
-    listContainer.innerHTML = filteredAlerts.map(alert => createAlertCard(alert, true)).join('');
+
+    if (filteredAlerts.length === 0) {
+        showEmptyState(listContainer, 'alerts');
+    } else {
+        listContainer.innerHTML = filteredAlerts.map(alert => createAlertCard(alert, true)).join('');
+    }
 }
 
 function createAlertCard(alert, full = false) {
@@ -482,25 +685,58 @@ function renderEvents() {
         isLive = false;
     }
     
+    if (upcomingEvents.length === 0) {
+        showEmptyState(container, 'events');
+        return;
+    }
+
     container.innerHTML = upcomingEvents.map(event => {
         const eventDate = new Date(event.date);
-        const style = window.ICSCalendar ? 
-            window.ICSCalendar.getEventStyle(event.type) : 
-            { icon: 'fa-calendar', color: '#005a5a' };
-        
+        const eventType = event.type || 'school';
+        const style = window.ICSCalendar ?
+            window.ICSCalendar.getEventStyle(eventType) :
+            getEventStyle(eventType);
+
         return `
-            <div class="event-card" style="border-left: 3px solid ${style.color};">
-                <div class="event-date" style="background: ${style.color}15;">
+            <div class="event-card" data-type="${eventType}">
+                <div class="event-date">
                     <span class="day">${eventDate.getDate()}</span>
                     <span class="month">${months[eventDate.getMonth()]}</span>
                 </div>
                 <div class="event-details">
                     <h4>${event.title}</h4>
                     <p>${eventDate.toLocaleDateString('en-NZ', { weekday: 'long' })}${event.location ? ' • ' + event.location : ''}</p>
+                    <span class="event-type-badge ${eventType}">${formatEventType(eventType)}</span>
                 </div>
             </div>
         `;
     }).join('');
+}
+
+// Get event style for demo data
+function getEventStyle(type) {
+    const styles = {
+        school: { icon: 'fa-school', color: '#005a5a' },
+        holiday: { icon: 'fa-umbrella-beach', color: '#c8102e' },
+        sport: { icon: 'fa-running', color: '#28a745' },
+        meeting: { icon: 'fa-users', color: '#17a2b8' },
+        event: { icon: 'fa-star', color: '#9c27b0' },
+        production: { icon: 'fa-theater-masks', color: '#ff9800' }
+    };
+    return styles[type] || styles.school;
+}
+
+// Format event type for display
+function formatEventType(type) {
+    const labels = {
+        school: 'School',
+        holiday: 'Holiday',
+        sport: 'Sport',
+        meeting: 'Meeting',
+        event: 'Event',
+        production: 'Production'
+    };
+    return labels[type] || type;
     
     // Show data source indicator
     if (sourceEl) {
@@ -516,10 +752,15 @@ function renderEvents() {
 
 function renderNewsletters(filter = 'all') {
     const container = document.getElementById('newsletterList');
-    const filtered = filter === 'all' 
-        ? demoData.newsletters 
+    const filtered = filter === 'all'
+        ? demoData.newsletters
         : demoData.newsletters.filter(n => n.category === filter || n.category === 'all');
-    
+
+    if (filtered.length === 0) {
+        showEmptyState(container, 'newsletters');
+        return;
+    }
+
     container.innerHTML = filtered.map(newsletter => `
         <a href="${newsletter.url}" class="newsletter-item" target="_blank">
             <div class="newsletter-icon">
@@ -538,10 +779,15 @@ function renderNewsletters(filter = 'all') {
 
 function renderNotices(filter = 'all') {
     const container = document.getElementById('noticesList');
-    const filtered = filter === 'all' 
-        ? demoData.notices 
+    const filtered = filter === 'all'
+        ? demoData.notices
         : demoData.notices.filter(n => n.category === filter || n.category === 'all');
-    
+
+    if (filtered.length === 0) {
+        showEmptyState(container, 'notices');
+        return;
+    }
+
     container.innerHTML = filtered.map(notice => `
         <div class="notice-item">
             <h4>${notice.title}</h4>
@@ -555,13 +801,18 @@ function renderNotices(filter = 'all') {
 
 function renderContacts(search = '') {
     const container = document.getElementById('contactsList');
-    const filtered = search 
-        ? demoData.contacts.filter(c => 
+    const filtered = search
+        ? demoData.contacts.filter(c =>
             c.name.toLowerCase().includes(search.toLowerCase()) ||
             c.role.toLowerCase().includes(search.toLowerCase())
           )
         : demoData.contacts;
-    
+
+    if (filtered.length === 0) {
+        showEmptyState(container, search ? 'search' : 'contacts');
+        return;
+    }
+
     container.innerHTML = filtered.map(contact => {
         const initials = contact.name.split(' ').map(n => n[0]).join('').substring(0, 2);
         return `
@@ -793,8 +1044,31 @@ function testNotification() {
 }
 
 function saveSubscriptions() {
-    // For push notifications, subscriptions are saved automatically
-    // This function is kept for backwards compatibility
+    // Gather subscription states from checkboxes
+    const checkboxes = document.querySelectorAll('#subscriptionsList input[type="checkbox"]');
+
+    checkboxes.forEach(checkbox => {
+        const topicId = checkbox.dataset.topic || checkbox.dataset.id;
+        if (topicId) {
+            const sub = demoData.subscriptions.find(s => s.id === topicId);
+            if (sub) {
+                sub.enabled = checkbox.checked;
+            }
+        }
+    });
+
+    // Save to localStorage
+    saveDemoData();
+
+    // Also save to user preferences
+    const prefs = {
+        subscriptions: demoData.subscriptions.reduce((acc, sub) => {
+            acc[sub.id] = sub.enabled;
+            return acc;
+        }, {})
+    };
+    localStorage.setItem(STORAGE_KEYS.USER_PREFS, JSON.stringify(prefs));
+
     showToast('Subscription preferences saved!', 'success');
 }
 
@@ -845,24 +1119,33 @@ function renderCalendar() {
     // Current month days
     for (let day = 1; day <= daysInMonth; day++) {
         const isToday = isCurrentMonth && today.getDate() === day;
-        
-        // Check for events on this day
-        let hasEvent = false;
+
+        // Check for events on this day and get their types
+        let dayEvents = [];
         if (window.ICSCalendar) {
-            hasEvent = window.ICSCalendar.dateHasEvents(year, month, day);
+            const hasEvent = window.ICSCalendar.dateHasEvents(year, month, day);
+            if (hasEvent) {
+                dayEvents = window.ICSCalendar.getEventsForDate(new Date(year, month, day)) || [];
+            }
         } else {
-            hasEvent = demoData.events.some(e => 
-                e.date.getFullYear() === year && 
-                e.date.getMonth() === month && 
+            dayEvents = demoData.events.filter(e =>
+                e.date.getFullYear() === year &&
+                e.date.getMonth() === month &&
                 e.date.getDate() === day
             );
         }
-        
+
+        const hasEvent = dayEvents.length > 0;
+        const hasMultiple = dayEvents.length > 1;
+        const eventType = dayEvents[0]?.type || 'school';
+
         const classes = ['calendar-day'];
         if (isToday) classes.push('today');
         if (hasEvent) classes.push('has-event');
-        
-        html += `<div class="${classes.join(' ')}" data-date="${year}-${month+1}-${day}">${day}</div>`;
+        if (hasMultiple) classes.push('has-multiple-events');
+
+        const dataAttrs = `data-date="${year}-${month+1}-${day}"${hasEvent ? ` data-event-type="${eventType}"` : ''}`;
+        html += `<div class="${classes.join(' ')}" ${dataAttrs}>${day}</div>`;
     }
     
     // Next month days
@@ -877,6 +1160,12 @@ function renderCalendar() {
     // Add click handlers to days
     grid.querySelectorAll('.calendar-day:not(.other-month)').forEach(dayEl => {
         dayEl.addEventListener('click', () => {
+            // Remove selected from all days
+            grid.querySelectorAll('.calendar-day').forEach(d => d.classList.remove('selected'));
+
+            // Add selected to clicked day
+            dayEl.classList.add('selected');
+
             const dateStr = dayEl.dataset.date;
             if (dateStr) {
                 showDayEvents(dateStr);
@@ -901,13 +1190,14 @@ function renderMonthEventsList(monthEvents, months, currentMonth) {
     
     eventList.innerHTML = monthEvents.map(event => {
         const eventDate = new Date(event.date);
-        const style = window.ICSCalendar ? 
-            window.ICSCalendar.getEventStyle(event.type) : 
-            { icon: 'fa-calendar', color: '#005a5a' };
-        
+        const eventType = event.type || 'school';
+        const style = window.ICSCalendar ?
+            window.ICSCalendar.getEventStyle(eventType) :
+            getEventStyle(eventType);
+
         return `
-            <div class="event-card" style="border-left: 3px solid ${style.color};">
-                <div class="event-date" style="background: ${style.color}15;">
+            <div class="event-card" data-type="${eventType}">
+                <div class="event-date">
                     <span class="day">${eventDate.getDate()}</span>
                     <span class="month">${months[eventDate.getMonth()].substring(0, 3)}</span>
                 </div>
@@ -918,6 +1208,7 @@ function renderMonthEventsList(monthEvents, months, currentMonth) {
                         ${eventDate.toLocaleDateString('en-NZ', { weekday: 'long' })}
                         ${event.location ? ' • ' + event.location : ''}
                     </p>
+                    <span class="event-type-badge ${eventType}">${formatEventType(eventType)}</span>
                 </div>
             </div>
         `;
@@ -981,6 +1272,239 @@ function showDayEvents(dateStr) {
     modal.addEventListener('click', (e) => {
         if (e.target === modal) modal.remove();
     });
+}
+
+// ===== Loading States =====
+function showLoadingSkeleton(container, type = 'card', count = 3) {
+    let skeletonHTML = '';
+
+    for (let i = 0; i < count; i++) {
+        switch(type) {
+            case 'alert':
+                skeletonHTML += `
+                    <div class="skeleton-card" style="display: flex; gap: var(--space-md); margin-bottom: var(--space-sm);">
+                        <div class="skeleton skeleton-avatar" style="width: 40px; height: 40px; border-radius: var(--radius-sm);"></div>
+                        <div style="flex: 1;">
+                            <div class="skeleton skeleton-title"></div>
+                            <div class="skeleton skeleton-text"></div>
+                        </div>
+                    </div>
+                `;
+                break;
+            case 'event':
+                skeletonHTML += `
+                    <div class="skeleton-card" style="display: flex; gap: var(--space-md); margin-bottom: var(--space-sm);">
+                        <div class="skeleton" style="width: 50px; height: 50px; border-radius: var(--radius-sm);"></div>
+                        <div style="flex: 1;">
+                            <div class="skeleton skeleton-title"></div>
+                            <div class="skeleton skeleton-text short"></div>
+                        </div>
+                    </div>
+                `;
+                break;
+            case 'newsletter':
+                skeletonHTML += `
+                    <div class="skeleton-card" style="display: flex; gap: var(--space-md); margin-bottom: var(--space-md);">
+                        <div class="skeleton" style="width: 48px; height: 48px; border-radius: var(--radius-sm);"></div>
+                        <div style="flex: 1;">
+                            <div class="skeleton skeleton-title"></div>
+                            <div class="skeleton skeleton-text short"></div>
+                        </div>
+                    </div>
+                `;
+                break;
+            case 'contact':
+                skeletonHTML += `
+                    <div class="skeleton-card" style="display: flex; gap: var(--space-md); margin-bottom: var(--space-md);">
+                        <div class="skeleton skeleton-avatar"></div>
+                        <div style="flex: 1;">
+                            <div class="skeleton skeleton-title"></div>
+                            <div class="skeleton skeleton-text short"></div>
+                        </div>
+                    </div>
+                `;
+                break;
+            default:
+                skeletonHTML += `
+                    <div class="skeleton-card" style="margin-bottom: var(--space-sm);">
+                        <div class="skeleton skeleton-title"></div>
+                        <div class="skeleton skeleton-text"></div>
+                        <div class="skeleton skeleton-text short"></div>
+                    </div>
+                `;
+        }
+    }
+
+    container.innerHTML = skeletonHTML;
+}
+
+function showLoadingSpinner(container) {
+    container.innerHTML = `
+        <div class="loading-spinner">
+            <div class="spinner"></div>
+        </div>
+    `;
+}
+
+// ===== Empty States =====
+function showEmptyState(container, type) {
+    const emptyStates = {
+        alerts: {
+            icon: 'fa-bell-slash',
+            title: 'No Alerts',
+            message: 'There are no school alerts at the moment. Check back later for updates.'
+        },
+        events: {
+            icon: 'fa-calendar-times',
+            title: 'No Events',
+            message: 'No upcoming events scheduled. New events will appear here.'
+        },
+        newsletters: {
+            icon: 'fa-newspaper',
+            title: 'No Newsletters',
+            message: 'No newsletters available for this category.'
+        },
+        notices: {
+            icon: 'fa-bullhorn',
+            title: 'No Notices',
+            message: 'No daily notices for today. Check back tomorrow.'
+        },
+        contacts: {
+            icon: 'fa-address-book',
+            title: 'No Contacts Found',
+            message: 'No contacts match your search. Try a different search term.'
+        },
+        notifications: {
+            icon: 'fa-inbox',
+            title: 'No Notifications',
+            message: 'You\'re all caught up! New notifications will appear here.'
+        },
+        search: {
+            icon: 'fa-search',
+            title: 'No Results',
+            message: 'No items match your search criteria.'
+        }
+    };
+
+    const state = emptyStates[type] || emptyStates.search;
+
+    container.innerHTML = `
+        <div class="empty-state">
+            <div class="empty-state-icon">
+                <i class="fas ${state.icon}"></i>
+            </div>
+            <h3>${state.title}</h3>
+            <p>${state.message}</p>
+        </div>
+    `;
+}
+
+// ===== Error Handling =====
+function showError(container, message = 'Something went wrong', canRetry = true) {
+    container.innerHTML = `
+        <div class="error-state">
+            <div class="error-state-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <h4>Oops!</h4>
+            <p>${message}</p>
+            ${canRetry ? '<button class="btn" onclick="location.reload()"><i class="fas fa-redo"></i> Try Again</button>' : ''}
+        </div>
+    `;
+}
+
+function showInlineError(container, message) {
+    const errorEl = document.createElement('div');
+    errorEl.className = 'error-message';
+    errorEl.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${message}`;
+    container.prepend(errorEl);
+
+    // Auto-remove after 5 seconds
+    setTimeout(() => errorEl.remove(), 5000);
+}
+
+// Global error handler
+window.addEventListener('error', (event) => {
+    console.error('Global error:', event.error);
+    // Don't show error UI for minor script errors
+});
+
+// ===== Timestamp Formatting =====
+function formatRelativeTime(date) {
+    const now = new Date();
+    const then = date instanceof Date ? date : new Date(date);
+    const diffMs = now - then;
+    const diffSecs = Math.floor(diffMs / 1000);
+    const diffMins = Math.floor(diffSecs / 60);
+    const diffHours = Math.floor(diffMins / 60);
+    const diffDays = Math.floor(diffHours / 24);
+    const diffWeeks = Math.floor(diffDays / 7);
+
+    if (diffSecs < 60) return 'Just now';
+    if (diffMins < 60) return `${diffMins}m ago`;
+    if (diffHours < 24) return `${diffHours}h ago`;
+    if (diffDays === 1) return 'Yesterday';
+    if (diffDays < 7) return `${diffDays}d ago`;
+    if (diffWeeks < 4) return `${diffWeeks}w ago`;
+
+    return then.toLocaleDateString('en-NZ', {
+        day: 'numeric',
+        month: 'short'
+    });
+}
+
+function formatAbsoluteTime(date) {
+    const d = date instanceof Date ? date : new Date(date);
+    return d.toLocaleDateString('en-NZ', {
+        weekday: 'short',
+        day: 'numeric',
+        month: 'short',
+        hour: 'numeric',
+        minute: '2-digit'
+    });
+}
+
+function formatTimestamp(timestamp) {
+    const relative = formatRelativeTime(timestamp);
+    const absolute = formatAbsoluteTime(timestamp);
+    return `<span class="timestamp-relative">${relative}</span><span class="timestamp-absolute"> · ${absolute}</span>`;
+}
+
+// ===== Page Transitions =====
+function navigateToPage(pageName) {
+    const currentPage = document.querySelector('.page.active');
+    const newPage = document.getElementById(pageName);
+
+    if (!newPage || currentPage === newPage) return;
+
+    // Exit animation for current page
+    if (currentPage) {
+        currentPage.classList.add('exiting');
+        currentPage.classList.remove('active');
+
+        setTimeout(() => {
+            currentPage.classList.remove('exiting');
+        }, 200);
+    }
+
+    // Enter animation for new page
+    setTimeout(() => {
+        newPage.classList.add('active');
+
+        // Update state
+        state.currentPage = pageName;
+
+        // Close side nav if open
+        closeSideNav();
+
+        // Update active nav link
+        document.querySelectorAll('.side-nav-menu a').forEach(link => {
+            link.classList.remove('active');
+            if (link.dataset.page === pageName) {
+                link.classList.add('active');
+            }
+        });
+    }, currentPage ? 150 : 0);
 }
 
 // ===== Toast Notifications =====

@@ -3,7 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Middleton Grange School</title>
+    <meta name="theme-color" content="#003d3d">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="MGS Connect">
+    <meta name="description" content="Middleton Grange School parent communication app - alerts, newsletters, calendar and more">
+    <title>MGS Connect - Middleton Grange School</title>
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+
+    <!-- Favicons -->
+    <link rel="icon" type="image/svg+xml" href="icons/favicon.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon.svg">
+    <link rel="apple-touch-icon" href="icons/icon-192.svg">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
@@ -27,6 +41,13 @@
                 <div class="loader-bar"></div>
             </div>
         </div>
+    </div>
+
+    <!-- Demo Mode Banner -->
+    <div id="demoBanner" class="demo-banner">
+        <i class="fas fa-flask"></i>
+        <span>DEMO MODE - Sample data shown</span>
+        <button id="closeDemoBanner" class="demo-banner-close">&times;</button>
     </div>
 
     <!-- Main App -->
@@ -405,6 +426,9 @@
                             <i class="fas fa-info-circle"></i>
                             Emergency alerts are always enabled to keep you informed of critical school announcements.
                         </p>
+                        <button id="saveSubscriptions" class="btn btn-primary btn-block" style="margin-top: var(--space-lg);">
+                            <i class="fas fa-save"></i> Save Preferences
+                        </button>
                     </div>
                 </div>
             </section>
