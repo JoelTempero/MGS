@@ -983,8 +983,8 @@ function testNotification() {
 function showTestNotification(title, body, type) {
     const notification = new Notification(title, {
         body: body,
-        icon: '../icons/icon-192.svg',
-        badge: '../icons/icon-72.svg',
+        icon: '../icons/icon-192.png',
+        badge: '../icons/icon-72.png',
         tag: 'mgs-test-' + Date.now(),
         requireInteraction: type === 'emergency'
     });
