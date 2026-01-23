@@ -48,7 +48,89 @@ const defaultAdminData = {
     ],
     notifications: [],
     subscriptions: [],
-    events: []
+    events: [],
+    absenceReports: [
+        {
+            id: 1,
+            type: 'absent',
+            studentName: 'Emma Thompson',
+            yearLevel: 'Year 8',
+            absenceDate: new Date().toISOString().split('T')[0],
+            expectedTime: null,
+            reason: 'Illness',
+            details: 'High temperature and sore throat',
+            contactPhone: '021 555 1234',
+            status: 'pending',
+            submittedAt: new Date(Date.now() - 1000 * 60 * 30).toISOString(),
+            acknowledgedAt: null,
+            acknowledgedBy: null,
+            adminNotes: null
+        },
+        {
+            id: 2,
+            type: 'late',
+            studentName: 'James Wilson',
+            yearLevel: 'Year 10',
+            absenceDate: new Date().toISOString().split('T')[0],
+            expectedTime: '10:30',
+            reason: 'Medical Appointment',
+            details: 'Dentist appointment, will arrive after morning tea',
+            contactPhone: '027 888 9999',
+            status: 'pending',
+            submittedAt: new Date(Date.now() - 1000 * 60 * 45).toISOString(),
+            acknowledgedAt: null,
+            acknowledgedBy: null,
+            adminNotes: null
+        },
+        {
+            id: 3,
+            type: 'absent',
+            studentName: 'Sophie Chen',
+            yearLevel: 'Year 5',
+            absenceDate: new Date().toISOString().split('T')[0],
+            expectedTime: null,
+            reason: 'Family Emergency',
+            details: '',
+            contactPhone: '022 333 4444',
+            status: 'acknowledged',
+            submittedAt: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(),
+            acknowledgedAt: new Date(Date.now() - 1000 * 60 * 60).toISOString(),
+            acknowledgedBy: 'Admin User',
+            adminNotes: null
+        },
+        {
+            id: 4,
+            type: 'absent',
+            studentName: 'Oliver Brown',
+            yearLevel: 'Year 12',
+            absenceDate: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString().split('T')[0],
+            expectedTime: null,
+            reason: 'Illness',
+            details: 'Cold symptoms',
+            contactPhone: '021 777 6666',
+            status: 'archived',
+            submittedAt: new Date(Date.now() - 1000 * 60 * 60 * 26).toISOString(),
+            acknowledgedAt: new Date(Date.now() - 1000 * 60 * 60 * 25).toISOString(),
+            acknowledgedBy: 'Admin User',
+            adminNotes: 'Parent called to follow up'
+        },
+        {
+            id: 5,
+            type: 'late',
+            studentName: 'Mia Anderson',
+            yearLevel: 'Year 3',
+            absenceDate: new Date().toISOString().split('T')[0],
+            expectedTime: '09:15',
+            reason: 'Other',
+            details: 'Car trouble on the way to school',
+            contactPhone: '027 111 2222',
+            status: 'pending',
+            submittedAt: new Date(Date.now() - 1000 * 60 * 15).toISOString(),
+            acknowledgedAt: null,
+            acknowledgedBy: null,
+            adminNotes: null
+        }
+    ]
 };
 
 // Load data from localStorage (shared with main app)
@@ -198,6 +280,10 @@ function openModal(title, content, editType = null, editId = null) {
     elements.modalBody.innerHTML = content;
     elements.modal.classList.add('open');
     currentEditContext = { type: editType, id: editId };
+
+    // Reset modal buttons to default state
+    elements.modalSave.style.display = 'inline-flex';
+    elements.modalCancel.textContent = 'Cancel';
 
     // Setup save handler
     elements.modalSave.onclick = () => handleModalSave();
@@ -564,6 +650,7 @@ function renderAllTables() {
     renderContactsTable();
     renderLinksGrid();
     renderTermDatesAdmin();
+    renderAbsenceReportsTable();
 }
 
 function renderAlertsTable() {
@@ -1206,6 +1293,272 @@ function updateDashboardStats() {
     updateNavBadge('alerts', adminData.alerts.length);
 }
 
+// ===== Absence Reports Management =====
+function initAbsenceReports() {
+    // Status filter
+    const statusFilter = document.getElementById('absenceStatusFilter');
+    const typeFilter = document.getElementById('absenceTypeFilter');
+
+    if (statusFilter) {
+        statusFilter.addEventListener('change', () => renderAbsenceReportsTable());
+    }
+    if (typeFilter) {
+        typeFilter.addEventListener('change', () => renderAbsenceReportsTable());
+    }
+}
+
+function renderAbsenceReportsTable() {
+    const tbody = document.getElementById('absenceReportsTable');
+    const emptyState = document.getElementById('noAbsenceReports');
+    const statusFilter = document.getElementById('absenceStatusFilter')?.value || 'all';
+    const typeFilter = document.getElementById('absenceTypeFilter')?.value || 'all';
+
+    if (!tbody) return;
+
+    // Ensure absenceReports exists
+    if (!adminData.absenceReports) {
+        adminData.absenceReports = [];
+    }
+
+    // Filter reports
+    let reports = adminData.absenceReports;
+
+    if (statusFilter !== 'all') {
+        reports = reports.filter(r => r.status === statusFilter);
+    }
+
+    if (typeFilter !== 'all') {
+        reports = reports.filter(r => r.type === typeFilter);
+    }
+
+    // Sort by date (newest first)
+    reports.sort((a, b) => new Date(b.submittedAt) - new Date(a.submittedAt));
+
+    // Update stats
+    updateAbsenceStats();
+
+    // Update nav badge
+    const pendingCount = adminData.absenceReports.filter(r => r.status === 'pending').length;
+    const badge = document.querySelector('.absence-badge');
+    if (badge) {
+        badge.textContent = pendingCount;
+        badge.style.display = pendingCount > 0 ? 'inline-flex' : 'none';
+    }
+
+    if (reports.length === 0) {
+        tbody.innerHTML = '';
+        if (emptyState) emptyState.style.display = 'block';
+        return;
+    }
+
+    if (emptyState) emptyState.style.display = 'none';
+
+    tbody.innerHTML = reports.map(report => {
+        const typeIcon = report.type === 'late' ? 'fa-clock' : 'fa-user-times';
+        const typeLabel = report.type === 'late' ? 'Late' : 'Absent';
+        const dateFormatted = new Date(report.absenceDate).toLocaleDateString('en-NZ', {
+            weekday: 'short',
+            day: 'numeric',
+            month: 'short'
+        });
+        const timeInfo = report.type === 'late' && report.expectedTime ? ` (ETA: ${report.expectedTime})` : '';
+        const submittedTime = formatTimeAgo(report.submittedAt);
+
+        return `
+            <tr data-id="${report.id}">
+                <td>
+                    <span class="type-badge ${report.type}">
+                        <i class="fas ${typeIcon}"></i> ${typeLabel}
+                    </span>
+                </td>
+                <td>
+                    <div class="student-info">
+                        <span class="student-name">${report.studentName}</span>
+                        <span class="student-year">${report.yearLevel}</span>
+                    </div>
+                </td>
+                <td>${dateFormatted}${timeInfo}</td>
+                <td class="reason-cell">
+                    <span class="reason-text">${report.reason}</span>
+                    ${report.details ? `<div class="reason-details" title="${report.details}">${report.details}</div>` : ''}
+                </td>
+                <td class="contact-cell">${report.contactPhone}</td>
+                <td>
+                    <span class="status-badge ${report.status}">${capitalizeFirst(report.status)}</span>
+                    <div style="font-size: 0.75rem; color: var(--mid-gray);">${submittedTime}</div>
+                </td>
+                <td>
+                    <div class="action-btns">
+                        ${report.status === 'pending' ? `
+                            <button class="action-btn acknowledge" onclick="acknowledgeReport(${report.id})" title="Acknowledge">
+                                <i class="fas fa-check"></i>
+                            </button>
+                        ` : ''}
+                        ${report.status === 'acknowledged' ? `
+                            <button class="action-btn archive" onclick="archiveReport(${report.id})" title="Archive">
+                                <i class="fas fa-archive"></i>
+                            </button>
+                        ` : ''}
+                        <button class="action-btn view" onclick="viewReportDetails(${report.id})" title="View Details">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        `;
+    }).join('');
+}
+
+function updateAbsenceStats() {
+    const reports = adminData.absenceReports || [];
+    const today = new Date().toISOString().split('T')[0];
+
+    const pendingCount = reports.filter(r => r.status === 'pending').length;
+    const absentToday = reports.filter(r => r.type === 'absent' && r.absenceDate === today && r.status !== 'archived').length;
+    const lateToday = reports.filter(r => r.type === 'late' && r.absenceDate === today && r.status !== 'archived').length;
+    const acknowledgedCount = reports.filter(r => r.status === 'acknowledged').length;
+
+    document.getElementById('pendingCount')?.textContent && (document.getElementById('pendingCount').textContent = pendingCount);
+    document.getElementById('absentTodayCount')?.textContent && (document.getElementById('absentTodayCount').textContent = absentToday);
+    document.getElementById('lateTodayCount')?.textContent && (document.getElementById('lateTodayCount').textContent = lateToday);
+    document.getElementById('acknowledgedCount')?.textContent && (document.getElementById('acknowledgedCount').textContent = acknowledgedCount);
+}
+
+function acknowledgeReport(id) {
+    const report = adminData.absenceReports.find(r => r.id === id);
+    if (report) {
+        report.status = 'acknowledged';
+        report.acknowledgedAt = new Date().toISOString();
+        report.acknowledgedBy = 'Admin User';
+        saveAdminData();
+        renderAbsenceReportsTable();
+        showToast(`${report.studentName}'s report acknowledged`, 'success');
+    }
+}
+
+function archiveReport(id) {
+    const report = adminData.absenceReports.find(r => r.id === id);
+    if (report) {
+        report.status = 'archived';
+        saveAdminData();
+        renderAbsenceReportsTable();
+        showToast(`Report archived`, 'success');
+    }
+}
+
+function viewReportDetails(id) {
+    const report = adminData.absenceReports.find(r => r.id === id);
+    if (!report) return;
+
+    const typeLabel = report.type === 'late' ? 'Late Arrival' : 'Absence';
+    const dateFormatted = new Date(report.absenceDate).toLocaleDateString('en-NZ', {
+        weekday: 'long',
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+    });
+    const submittedFormatted = new Date(report.submittedAt).toLocaleString('en-NZ');
+
+    const content = `
+        <div class="report-details">
+            <div class="detail-row">
+                <span class="detail-label">Report Type</span>
+                <span class="detail-value"><span class="type-badge ${report.type}">${typeLabel}</span></span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Student Name</span>
+                <span class="detail-value"><strong>${report.studentName}</strong></span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Year Level</span>
+                <span class="detail-value">${report.yearLevel}</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Date</span>
+                <span class="detail-value">${dateFormatted}</span>
+            </div>
+            ${report.type === 'late' && report.expectedTime ? `
+            <div class="detail-row">
+                <span class="detail-label">Expected Arrival</span>
+                <span class="detail-value">${report.expectedTime}</span>
+            </div>
+            ` : ''}
+            <div class="detail-row">
+                <span class="detail-label">Reason</span>
+                <span class="detail-value">${report.reason}</span>
+            </div>
+            ${report.details ? `
+            <div class="detail-row">
+                <span class="detail-label">Additional Details</span>
+                <span class="detail-value">${report.details}</span>
+            </div>
+            ` : ''}
+            <div class="detail-row">
+                <span class="detail-label">Contact Phone</span>
+                <span class="detail-value"><a href="tel:${report.contactPhone}">${report.contactPhone}</a></span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Submitted</span>
+                <span class="detail-value">${submittedFormatted}</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Status</span>
+                <span class="detail-value"><span class="status-badge ${report.status}">${capitalizeFirst(report.status)}</span></span>
+            </div>
+            ${report.acknowledgedAt ? `
+            <div class="detail-row">
+                <span class="detail-label">Acknowledged</span>
+                <span class="detail-value">${new Date(report.acknowledgedAt).toLocaleString('en-NZ')} by ${report.acknowledgedBy}</span>
+            </div>
+            ` : ''}
+            ${report.adminNotes ? `
+            <div class="detail-row">
+                <span class="detail-label">Admin Notes</span>
+                <span class="detail-value">${report.adminNotes}</span>
+            </div>
+            ` : ''}
+        </div>
+        <style>
+            .report-details { padding: 0.5rem 0; }
+            .detail-row { display: flex; padding: 0.75rem 0; border-bottom: 1px solid var(--light-gray); }
+            .detail-row:last-child { border-bottom: none; }
+            .detail-label { width: 140px; font-weight: 500; color: var(--dark-gray); flex-shrink: 0; }
+            .detail-value { flex: 1; color: var(--near-black); }
+            .detail-value a { color: var(--primary); }
+        </style>
+    `;
+
+    openModal(`${typeLabel} Report - ${report.studentName}`, content);
+
+    // Hide save button for view-only modal
+    elements.modalSave.style.display = 'none';
+    elements.modalCancel.textContent = 'Close';
+}
+
+function capitalizeFirst(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+function formatTimeAgo(timestamp) {
+    const now = new Date();
+    const then = new Date(timestamp);
+    const diffMs = now - then;
+    const diffMins = Math.floor(diffMs / (1000 * 60));
+    const diffHours = Math.floor(diffMins / 60);
+    const diffDays = Math.floor(diffHours / 24);
+
+    if (diffMins < 1) return 'Just now';
+    if (diffMins < 60) return `${diffMins}m ago`;
+    if (diffHours < 24) return `${diffHours}h ago`;
+    if (diffDays === 1) return 'Yesterday';
+    return `${diffDays}d ago`;
+}
+
+// Initialize absence reports on load
+document.addEventListener('DOMContentLoaded', () => {
+    initAbsenceReports();
+});
+
 // Expose functions globally for use in HTML
 window.editAlert = editAlert;
 window.editNewsletter = editNewsletter;
@@ -1217,3 +1570,6 @@ window.resetAllData = resetAllData;
 window.exportData = exportData;
 window.testNotification = testNotification;
 window.clearPushForm = clearPushForm;
+window.acknowledgeReport = acknowledgeReport;
+window.archiveReport = archiveReport;
+window.viewReportDetails = viewReportDetails;

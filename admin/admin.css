@@ -914,7 +914,217 @@ input, select, textarea { font-family: inherit; }
     color: #155724;
 }
 
+/* ===== Absence Reports ===== */
+.header-actions-group {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.filter-select {
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--light-gray);
+    border-radius: var(--radius-sm);
+    background: var(--white);
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+
+.filter-select:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
+.absence-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.stat-card-mini {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    background: var(--white);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    border-left: 4px solid var(--mid-gray);
+}
+
+.stat-card-mini.pending {
+    border-left-color: var(--warning);
+}
+
+.stat-card-mini.absent {
+    border-left-color: var(--accent);
+}
+
+.stat-card-mini.late {
+    border-left-color: #fd7e14;
+}
+
+.stat-card-mini.acknowledged {
+    border-left-color: var(--success);
+}
+
+.stat-card-mini i {
+    font-size: 1.5rem;
+    color: var(--mid-gray);
+}
+
+.stat-card-mini.pending i { color: var(--warning); }
+.stat-card-mini.absent i { color: var(--accent); }
+.stat-card-mini.late i { color: #fd7e14; }
+.stat-card-mini.acknowledged i { color: var(--success); }
+
+.stat-card-mini .stat-value {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--near-black);
+    line-height: 1;
+}
+
+.stat-card-mini .stat-label {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--mid-gray);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* Absence report table styles */
+.type-badge.absent {
+    background: rgba(200, 16, 46, 0.1);
+    color: var(--accent);
+}
+
+.type-badge.late {
+    background: rgba(253, 126, 20, 0.15);
+    color: #fd7e14;
+}
+
+.status-badge.pending {
+    background: rgba(255, 193, 7, 0.2);
+    color: #997404;
+}
+
+.status-badge.acknowledged {
+    background: rgba(40, 167, 69, 0.15);
+    color: var(--success);
+}
+
+.status-badge.archived {
+    background: rgba(108, 117, 125, 0.15);
+    color: var(--dark-gray);
+}
+
+.student-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.student-name {
+    font-weight: 600;
+    color: var(--near-black);
+}
+
+.student-year {
+    font-size: 0.8rem;
+    color: var(--mid-gray);
+}
+
+.reason-cell {
+    max-width: 200px;
+}
+
+.reason-text {
+    font-weight: 500;
+}
+
+.reason-details {
+    font-size: 0.8rem;
+    color: var(--mid-gray);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.contact-cell {
+    font-size: 0.9rem;
+}
+
+.action-btn.acknowledge {
+    color: var(--success);
+}
+
+.action-btn.acknowledge:hover {
+    background: rgba(40, 167, 69, 0.1);
+}
+
+.action-btn.archive {
+    color: var(--mid-gray);
+}
+
+.action-btn.archive:hover {
+    background: rgba(108, 117, 125, 0.1);
+}
+
+.action-btn.view {
+    color: var(--info);
+}
+
+.action-btn.view:hover {
+    background: rgba(23, 162, 184, 0.1);
+}
+
+.empty-state {
+    text-align: center;
+    padding: 3rem 2rem;
+    background: var(--white);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+}
+
+.empty-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--light-gray);
+    border-radius: 50%;
+}
+
+.empty-icon i {
+    font-size: 2rem;
+    color: var(--mid-gray);
+}
+
+.empty-state h3 {
+    font-size: 1.25rem;
+    color: var(--near-black);
+    margin-bottom: 0.5rem;
+}
+
+.empty-state p {
+    color: var(--mid-gray);
+}
+
+.nav-badge.absence-badge {
+    background: var(--warning);
+    color: #212529;
+}
+
 /* ===== Responsive improvements ===== */
+@media (max-width: 1200px) {
+    .absence-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
 @media (max-width: 768px) {
     .templates-grid {
         grid-template-columns: repeat(3, 1fr);
@@ -939,5 +1149,14 @@ input, select, textarea { font-family: inherit; }
     .setting-buttons .btn {
         width: 100%;
         justify-content: center;
+    }
+
+    .absence-stats-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .header-actions-group {
+        flex-direction: column;
+        gap: 0.5rem;
     }
 }

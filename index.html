@@ -85,7 +85,7 @@
             </div>
             <ul class="side-nav-menu">
                 <li><a href="#" data-page="home" class="active"><i class="fas fa-home"></i> Home</a></li>
-                <li><a href="#" data-page="absences"><i class="fas fa-user-clock"></i> Report Absence</a></li>
+                <li><a href="#" data-page="absences"><i class="fas fa-user-clock"></i> Report Absence/Late</a></li>
                 <li><a href="#" data-page="newsletters"><i class="fas fa-newspaper"></i> Newsletters</a></li>
                 <li><a href="#" data-page="calendar"><i class="fas fa-calendar-alt"></i> Calendar</a></li>
                 <li><a href="#" data-page="notices"><i class="fas fa-bullhorn"></i> Daily Notices</a></li>
@@ -216,9 +216,118 @@
             <section class="page" id="page-absences">
                 <div class="page-header">
                     <button class="back-btn" data-page="home"><i class="fas fa-arrow-left"></i></button>
-                    <h2>Report an Absence</h2>
+                    <h2>Report Absence/Late</h2>
                 </div>
                 <div class="page-content">
+                    <!-- Absence/Late Report Form -->
+                    <div class="absence-form-section">
+                        <div class="absence-form-header">
+                            <div class="absence-form-icon">
+                                <i class="fas fa-clipboard-list"></i>
+                            </div>
+                            <div>
+                                <h3>Submit a Report</h3>
+                                <p>Quickly notify the school office</p>
+                            </div>
+                        </div>
+
+                        <form id="absenceReportForm" class="absence-form">
+                            <!-- Report Type Toggle -->
+                            <div class="form-group">
+                                <label>Report Type <span class="required">*</span></label>
+                                <div class="report-type-toggle">
+                                    <label class="type-option">
+                                        <input type="radio" name="reportType" value="absent" required>
+                                        <div class="type-btn">
+                                            <i class="fas fa-user-times"></i>
+                                            <span>Absent</span>
+                                        </div>
+                                    </label>
+                                    <label class="type-option">
+                                        <input type="radio" name="reportType" value="late">
+                                        <div class="type-btn">
+                                            <i class="fas fa-clock"></i>
+                                            <span>Late</span>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="studentName">Student Name <span class="required">*</span></label>
+                                <input type="text" id="studentName" name="studentName" placeholder="Enter student's full name" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="yearLevel">Year Level <span class="required">*</span></label>
+                                <select id="yearLevel" name="yearLevel" required>
+                                    <option value="">Select year level...</option>
+                                    <option value="Year 1">Year 1</option>
+                                    <option value="Year 2">Year 2</option>
+                                    <option value="Year 3">Year 3</option>
+                                    <option value="Year 4">Year 4</option>
+                                    <option value="Year 5">Year 5</option>
+                                    <option value="Year 6">Year 6</option>
+                                    <option value="Year 7">Year 7</option>
+                                    <option value="Year 8">Year 8</option>
+                                    <option value="Year 9">Year 9</option>
+                                    <option value="Year 10">Year 10</option>
+                                    <option value="Year 11">Year 11</option>
+                                    <option value="Year 12">Year 12</option>
+                                    <option value="Year 13">Year 13</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="absenceDate">Date <span class="required">*</span></label>
+                                <input type="date" id="absenceDate" name="absenceDate" required>
+                            </div>
+
+                            <div class="form-group" id="expectedTimeGroup" style="display: none;">
+                                <label for="expectedTime">Expected Arrival Time</label>
+                                <input type="time" id="expectedTime" name="expectedTime">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="absenceReason">Reason <span class="required">*</span></label>
+                                <select id="absenceReason" name="absenceReason" required>
+                                    <option value="">Select reason...</option>
+                                    <option value="Illness">Illness</option>
+                                    <option value="Medical Appointment">Medical Appointment</option>
+                                    <option value="Family Emergency">Family Emergency</option>
+                                    <option value="Bereavement">Bereavement</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="absenceDetails">Additional Details</label>
+                                <textarea id="absenceDetails" name="absenceDetails" rows="2" placeholder="Optional: Any additional information..."></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="contactPhone">Contact Phone <span class="required">*</span></label>
+                                <input type="tel" id="contactPhone" name="contactPhone" placeholder="e.g., 021 123 4567" required>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary btn-block">
+                                <i class="fas fa-paper-plane"></i> Submit Report
+                            </button>
+                        </form>
+
+                        <!-- Recent Reports -->
+                        <div class="my-reports-section" id="myReportsSection" style="display: none;">
+                            <h4><i class="fas fa-history"></i> My Recent Reports</h4>
+                            <div class="my-reports-list" id="myReportsList">
+                                <!-- Populated by JS -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="absence-divider">
+                        <span>or contact us directly</span>
+                    </div>
+
                     <div class="absence-options">
                         <div class="absence-card">
                             <div class="absence-icon-large">

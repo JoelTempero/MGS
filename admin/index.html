@@ -41,6 +41,13 @@
                         </a>
                     </li>
                     <li>
+                        <a href="#" class="nav-link" data-section="absence-reports">
+                            <i class="fas fa-user-clock"></i>
+                            <span>Absence Reports</span>
+                            <span class="nav-badge absence-badge">0</span>
+                        </a>
+                    </li>
+                    <li>
                         <a href="#" class="nav-link" data-section="newsletters">
                             <i class="fas fa-newspaper"></i>
                             <span>Newsletters</span>
@@ -279,6 +286,88 @@
                                 <!-- Populated by JS -->
                             </tbody>
                         </table>
+                    </div>
+                </section>
+
+                <!-- Absence Reports Section -->
+                <section class="section" id="section-absence-reports">
+                    <div class="section-header">
+                        <div>
+                            <h2>Absence Reports</h2>
+                            <p>View and manage absence/late reports from parents</p>
+                        </div>
+                        <div class="header-actions-group">
+                            <select id="absenceStatusFilter" class="filter-select">
+                                <option value="all">All Reports</option>
+                                <option value="pending">Pending</option>
+                                <option value="acknowledged">Acknowledged</option>
+                                <option value="archived">Archived</option>
+                            </select>
+                            <select id="absenceTypeFilter" class="filter-select">
+                                <option value="all">All Types</option>
+                                <option value="absent">Absent Only</option>
+                                <option value="late">Late Only</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Stats Cards -->
+                    <div class="absence-stats-grid">
+                        <div class="stat-card-mini pending">
+                            <i class="fas fa-clock"></i>
+                            <div>
+                                <span class="stat-value" id="pendingCount">0</span>
+                                <span class="stat-label">Pending</span>
+                            </div>
+                        </div>
+                        <div class="stat-card-mini absent">
+                            <i class="fas fa-user-times"></i>
+                            <div>
+                                <span class="stat-value" id="absentTodayCount">0</span>
+                                <span class="stat-label">Absent Today</span>
+                            </div>
+                        </div>
+                        <div class="stat-card-mini late">
+                            <i class="fas fa-clock"></i>
+                            <div>
+                                <span class="stat-value" id="lateTodayCount">0</span>
+                                <span class="stat-label">Late Today</span>
+                            </div>
+                        </div>
+                        <div class="stat-card-mini acknowledged">
+                            <i class="fas fa-check-circle"></i>
+                            <div>
+                                <span class="stat-value" id="acknowledgedCount">0</span>
+                                <span class="stat-label">Acknowledged</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="data-table-wrapper">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Student</th>
+                                    <th>Date</th>
+                                    <th>Reason</th>
+                                    <th>Contact</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="absenceReportsTable">
+                                <!-- Populated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="empty-state" id="noAbsenceReports" style="display: none;">
+                        <div class="empty-icon">
+                            <i class="fas fa-clipboard-check"></i>
+                        </div>
+                        <h3>No Reports</h3>
+                        <p>There are no absence reports to display.</p>
                     </div>
                 </section>
 
