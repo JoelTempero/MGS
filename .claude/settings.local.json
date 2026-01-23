@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dir:*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nImplement comprehensive demo enhancements for MGS Connect\n\nChunk 1 - Demo Data & Basic Editability:\n- Add PWA manifest.json for Add to Home Screen\n- Create localStorage persistence with shared mgs_demo_data key\n- Add MGSData API for data management across app and admin\n- Create demo-data.json and newsletter placeholder\n- Add SVG icons for PWA and notifications\n- Add demo banner with dismiss functionality\n\nChunk 2 - Admin Portal Functionality:\n- Implement full CRUD operations that persist to localStorage\n- Add form pre-filling for edit mode with currentEditContext\n- Add notification templates \\(closure, event-reminder, sport-update, newsletter, weather, custom\\)\n- Add data management functions \\(reset, export, import\\)\n- Add skeleton loading states and empty state components\n\nChunk 3 - UX Polish:\n- Add page transition animations \\(slide in/out\\)\n- Add event category colors \\(school, holiday, sport, meeting, event, production\\)\n- Add calendar day selection with visual feedback\n- Add relative timestamp formatting for notifications\n- Add micro-interactions \\(hover effects, press states\\)\n- Add staggered animations for nav and notification panels\n\nChunk 4 - Push Notification Enhancements:\n- Add service worker for offline caching support\n- Add test notification feature using browser Notification API\n- Add offline detection with visual indicator\n- Add schedule option toggle for notifications \\(demo mode\\)\n- Update firebase-messaging-sw.js to use SVG icons\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git push)"
+    ]
+  }
+}
