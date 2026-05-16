@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#003d3d">
+    <meta name="theme-color" content="#8B0000">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="MGS Connect">
@@ -20,22 +20,16 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&family=Inter+Tight:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/middleton.css">
 </head>
 <body>
     <!-- Splash Screen -->
     <div id="splash-screen" class="splash-screen">
         <div class="splash-content">
-            <div class="splash-logo">
-                <svg viewBox="0 0 100 100" class="crest-icon">
-                    <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" stroke-width="2"/>
-                    <path d="M50 15 L50 85 M25 50 L75 50" stroke="currentColor" stroke-width="3"/>
-                    <path d="M30 30 Q50 20 70 30 Q80 50 70 70 Q50 80 30 70 Q20 50 30 30" fill="none" stroke="currentColor" stroke-width="1.5"/>
-                </svg>
-            </div>
-            <h1 class="splash-title">Middleton Grange</h1>
+            <h1 class="splash-title">Middleton<br>Grange</h1>
             <p class="splash-subtitle">In Thy Light Shall We See Light</p>
             <div class="splash-loader">
                 <div class="loader-bar"></div>
@@ -43,14 +37,7 @@
         </div>
     </div>
 
-    <!-- Demo Mode Banner -->
-    <div id="demoBanner" class="demo-banner">
-        <i class="fas fa-flask"></i>
-        <span>DEMO MODE - Sample data shown</span>
-        <button id="closeDemoBanner" class="demo-banner-close">&times;</button>
-    </div>
-
-    <!-- Main App -->
+<!-- Main App -->
     <div id="app" class="app">
         <!-- Header -->
         <header class="header">
@@ -77,17 +64,11 @@
         <!-- Side Navigation -->
         <nav class="side-nav" id="sideNav">
             <div class="side-nav-header">
-                <div class="side-nav-logo">
-                    <svg viewBox="0 0 100 100" class="crest-icon-small">
-                        <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" stroke-width="2"/>
-                        <path d="M50 15 L50 85 M25 50 L75 50" stroke="currentColor" stroke-width="3"/>
-                    </svg>
-                </div>
                 <div class="side-nav-info">
-                    <h2>MGS Connect</h2>
-                    <p>Stay Connected</p>
+                    <h2>Middleton Grange</h2>
+                    <p>Parent App</p>
                 </div>
-                <button class="side-nav-close" id="sideNavClose">
+                <button class="side-nav-close" id="sideNavClose" aria-label="Close menu">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
@@ -119,18 +100,14 @@
                 <div class="hero">
                     <div class="hero-content">
                         <div class="hero-greeting">
-                            <span class="greeting-text" id="greetingText">Good Morning</span>
-                            <h2 class="hero-title">Welcome to MGS</h2>
+                            <span class="greeting-text" id="greetingText">Good morning</span>
+                            <span class="hero-date" id="heroDate"></span>
                         </div>
                         <div class="hero-verse">
                             <p id="dailyVerse">"But godliness with contentment is great gain."</p>
                             <span class="verse-ref">1 Timothy 6:6</span>
                         </div>
-                    </div>
-                    <div class="hero-decoration">
-                        <div class="decoration-circle"></div>
-                        <div class="decoration-circle"></div>
-                        <div class="decoration-circle"></div>
+                        <div class="hero-values">Character · Excellence · Service</div>
                     </div>
                 </div>
 
