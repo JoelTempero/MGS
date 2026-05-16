@@ -404,23 +404,6 @@ function initNavigation() {
             filterContent(parent, tabValue);
         });
     });
-
-    // 4-tab primary bottom nav
-    const MG_TAB_PAGES = { home: 'home', notices: 'notices', calendar: 'calendar', more: 'more' };
-    document.querySelectorAll('.mg-tab').forEach(t => {
-        t.addEventListener('click', () => {
-            document.querySelectorAll('.mg-tab').forEach(x => x.classList.toggle('is-active', x === t));
-            navigateTo(MG_TAB_PAGES[t.dataset.tab]);
-        });
-    });
-
-    // More-page row links
-    document.querySelectorAll('[data-go]').forEach(a =>
-        a.addEventListener('click', e => { e.preventDefault(); navigateTo(a.dataset.go); }));
-
-    // Notices content-type filter
-    document.querySelectorAll('[data-nfilter]').forEach(b =>
-        b.addEventListener('click', () => filterNotices(b.dataset.nfilter)));
 }
 
 function toggleSideNav() {
@@ -477,15 +460,6 @@ function filterContent(parent, filter) {
     } else if (pageId === 'page-notices') {
         renderNotices(filter);
     }
-}
-
-// Notices content-type filter (All / Newsletters / Alerts)
-// The notices page renders a single #noticesList block — no separable sub-blocks to hide.
-// This function updates the active filter button state as a safe no-op visual cue.
-function filterNotices(kind) {
-    document.querySelectorAll('[data-nfilter]').forEach(b =>
-        b.classList.toggle('is-active', b.dataset.nfilter === kind));
-    // If notices are ever split into separable containers, toggle them here.
 }
 
 // ===== Notifications =====
