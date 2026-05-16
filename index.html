@@ -61,8 +61,16 @@
             </div>
         </header>
 
-        <!-- Side Navigation -->
-        <nav class="side-nav" id="sideNav">
+        <!-- Primary 4-tab bottom navigation -->
+        <nav class="mg-tabs" aria-label="Primary">
+          <button class="mg-tab is-active" data-tab="home"     type="button"><span class="mg-tab-ico">⌂</span>Home</button>
+          <button class="mg-tab"           data-tab="notices"  type="button"><span class="mg-tab-ico">❖</span>Notices</button>
+          <button class="mg-tab"           data-tab="calendar" type="button"><span class="mg-tab-ico">▦</span>Calendar</button>
+          <button class="mg-tab"           data-tab="more"     type="button"><span class="mg-tab-ico">⋯</span>More</button>
+        </nav>
+
+        <!-- Hidden side-nav kept for admin login link / overlay wiring -->
+        <nav class="side-nav" id="sideNav" style="display:none" aria-hidden="true">
             <div class="side-nav-header">
                 <div class="side-nav-info">
                     <h2>Middleton Grange</h2>
@@ -93,7 +101,7 @@
         <div class="overlay" id="overlay"></div>
 
         <!-- Main Content -->
-        <main class="main-content" id="mainContent">
+        <main class="main-content mg-app-scroll" id="mainContent">
             <!-- Home Page -->
             <section class="page active" id="page-home">
                 <!-- Hero Section -->
@@ -294,6 +302,11 @@
                     <h2>Daily Notices</h2>
                 </div>
                 <div class="page-content">
+                    <div class="mg-card" style="display:flex;gap:8px;flex-wrap:wrap">
+                      <button class="mg-btn mg-btn--ghost" data-nfilter="all">All</button>
+                      <button class="mg-btn mg-btn--ghost" data-nfilter="newsletters">Newsletters</button>
+                      <button class="mg-btn mg-btn--ghost" data-nfilter="alerts">Alerts</button>
+                    </div>
                     <div class="notices-date">
                         <i class="fas fa-calendar-day"></i>
                         <span id="noticesDate">Wednesday, 7 January 2026</span>
@@ -407,6 +420,20 @@
                             <i class="fas fa-save"></i> Save Preferences
                         </button>
                     </div>
+                </div>
+            </section>
+
+            <!-- More Page -->
+            <section class="page" id="page-more">
+                <div class="page-header">
+                    <h2>More</h2>
+                </div>
+                <div class="page-content">
+                    <a class="mg-row" href="#" data-go="absences"><span class="mg-row-body"><span class="mg-row-title">Report an absence</span></span><span class="mg-row-chev">›</span></a>
+                    <a class="mg-row" href="#" data-go="contacts"><span class="mg-row-body"><span class="mg-row-title">Contacts</span></span><span class="mg-row-chev">›</span></a>
+                    <a class="mg-row" href="#" data-go="links"><span class="mg-row-body"><span class="mg-row-title">Useful links</span></span><span class="mg-row-chev">›</span></a>
+                    <a class="mg-row" href="#" data-go="term-dates"><span class="mg-row-body"><span class="mg-row-title">Term dates</span></span><span class="mg-row-chev">›</span></a>
+                    <a class="mg-row" href="#" data-go="subscriptions"><span class="mg-row-body"><span class="mg-row-title">Notification subscriptions</span></span><span class="mg-row-chev">›</span></a>
                 </div>
             </section>
         </main>

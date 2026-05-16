@@ -360,25 +360,20 @@ function setGreeting() {
     const now = new Date();
     const hour = now.getHours();
     const greetingEl = document.getElementById('greetingText');
-
-    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-    const dayName = days[now.getDay()];
+    const dateEl = document.getElementById('heroDate');
 
     let timeGreeting;
     if (hour < 12) {
-        timeGreeting = 'Good Morning';
+        timeGreeting = 'Good morning';
     } else if (hour < 17) {
-        timeGreeting = 'Good Afternoon';
+        timeGreeting = 'Good afternoon';
     } else {
-        timeGreeting = 'Good Evening';
+        timeGreeting = 'Good evening';
     }
 
-    greetingEl.textContent = `${timeGreeting}`;
-
-    // Also update the hero title to include day
-    const heroTitle = document.querySelector('.hero-title');
-    if (heroTitle) {
-        heroTitle.textContent = `Happy ${dayName}!`;
+    if (greetingEl) greetingEl.textContent = timeGreeting;
+    if (dateEl) {
+        dateEl.textContent = now.toLocaleDateString('en-NZ', { weekday: 'long', day: 'numeric', month: 'long' });
     }
 }
 
@@ -398,17 +393,34 @@ function initNavigation() {
         });
     });
 
-    // Tab buttons
+    // Tab buttons (notices/newsletters school-level filter)
     document.querySelectorAll('.tab-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             const parent = btn.parentElement;
             parent.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            
+
             const tabValue = btn.dataset.tab;
             filterContent(parent, tabValue);
         });
     });
+
+    // 4-tab primary bottom nav
+    const MG_TAB_PAGES = { home: 'home', notices: 'notices', calendar: 'calendar', more: 'more' };
+    document.querySelectorAll('.mg-tab').forEach(t => {
+        t.addEventListener('click', () => {
+            document.querySelectorAll('.mg-tab').forEach(x => x.classList.toggle('is-active', x === t));
+            navigateTo(MG_TAB_PAGES[t.dataset.tab]);
+        });
+    });
+
+    // More-page row links
+    document.querySelectorAll('[data-go]').forEach(a =>
+        a.addEventListener('click', e => { e.preventDefault(); navigateTo(a.dataset.go); }));
+
+    // Notices content-type filter
+    document.querySelectorAll('[data-nfilter]').forEach(b =>
+        b.addEventListener('click', () => filterNotices(b.dataset.nfilter)));
 }
 
 function toggleSideNav() {
@@ -459,12 +471,21 @@ function navigateTo(page) {
 
 function filterContent(parent, filter) {
     const pageId = parent.closest('.page').id;
-    
+
     if (pageId === 'page-newsletters') {
         renderNewsletters(filter);
     } else if (pageId === 'page-notices') {
         renderNotices(filter);
     }
+}
+
+// Notices content-type filter (All / Newsletters / Alerts)
+// The notices page renders a single #noticesList block — no separable sub-blocks to hide.
+// This function updates the active filter button state as a safe no-op visual cue.
+function filterNotices(kind) {
+    document.querySelectorAll('[data-nfilter]').forEach(b =>
+        b.classList.toggle('is-active', b.dataset.nfilter === kind));
+    // If notices are ever split into separable containers, toggle them here.
 }
 
 // ===== Notifications =====
