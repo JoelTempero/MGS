@@ -319,11 +319,18 @@ function isCycleLabel(title) {
     const t = (title || '').trim();
     if (!t) return true;                                           // empty title
     if (/^[()\[\]\s.,;:_-]*$/.test(t)) return true;                // punctuation only, e.g. "()"
-    if (/^(Mon|Tue|Wed|Thu|Fri|Sat|Sun)\s+[A-Z]$/i.test(t)) return true;            // "Fri A"
-    if (/(^|\s)T-?\d+\b/i.test(t) && /(^|\s)W-?\d+\b/i.test(t) && /\bDay\s*\d+/i.test(t)) return true; // "T-2 W-2 Day 5 ()"
-    if (/^Day\s*\d+\s*\(?\s*\)?$/i.test(t)) return true;           // "Day 5", "Day 5 ()"
-    if (/^W(ee)?k?-?\s?\d+\s*\(?\s*\)?$/i.test(t)) return true;    // "W-2", "Wk 2", "Week 2"
-    return false;
+
+    // Judge the raw title AND its de-parenthesised core, so "(Week A)" is caught too.
+    const core = t.replace(/^[(\[]\s*/, '').replace(/\s*[)\]]$/, '').trim();
+    return [t, core].some(s => {
+        if (!s) return true;
+        if (/^(Mon|Tue|Wed|Thu|Fri|Sat|Sun)\s+[A-Z]$/i.test(s)) return true;          // "Fri A"
+        if (/^Day\s*\d+\s*\(?\s*\)?$/i.test(s)) return true;                            // "Day 5", "Day 5 ()"
+        if (/^W(ee)?k?\s*-?\s*[A-Z0-9]{1,3}\s*\(?\s*\)?$/i.test(s)) return true;        // "Week A", "Week B", "Wk 2", "W-2"
+        // term/week/day cycle combo, letters or digits: "T-2 W-2 Day 5 ()", "Wk B Day 3"
+        if (/(^|\s)T-?\d+\b/i.test(s) && /(^|\s)W(ee)?k?-?\s?[A-Z0-9]+\b/i.test(s) && /\bDay\s*\d+/i.test(s)) return true;
+        return false;
+    });
 }
 
 function isRealEvent(e) {
