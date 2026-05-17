@@ -558,7 +558,7 @@ img {
     position: relative;
     background:
         linear-gradient(180deg, rgba(15,11,7,0.34) 0%, rgba(69,16,16,0.86) 100%),
-        url('../images/home-hero.jpg') 50% calc(16% - 50px) / 165% no-repeat;
+        url('../images/home-hero.jpg') 50% calc(16% - 100px) / 165% no-repeat;
     color: var(--white);
     padding: var(--space-xl) var(--space-lg);
     overflow: hidden;
@@ -620,6 +620,68 @@ img {
     font-size: 0.8rem;
     opacity: 0.8;
 }
+
+/* ===== Annie Jr banner (mirrors the website promo strip) ===== */
+.annie-banner {
+    background: #26262B;
+    color: #FFF;
+    position: relative;
+    overflow: hidden;
+}
+.annie-banner::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(ellipse at 85% 25%, rgba(255,255,255,0.16), transparent 55%),
+        linear-gradient(90deg, rgba(0,0,0,0.22), transparent 45%);
+    pointer-events: none;
+}
+.annie-inner {
+    position: relative;
+    padding: 22px var(--space-lg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 14px;
+}
+.annie-art img {
+    display: block;
+    height: 64px;
+    width: auto;
+    filter: drop-shadow(0 4px 14px rgba(0,0,0,0.3));
+}
+.annie-eyebrow {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 10px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.78);
+}
+.annie-copy h2 {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-weight: 400;
+    font-style: italic;
+    font-size: 1.4rem;
+    line-height: 1.18;
+    color: #FFF;
+}
+.annie-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 24px;
+    background: #FFF;
+    color: var(--primary, #6E1B1B);
+    font-family: 'Inter Tight', -apple-system, system-ui, sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    border-radius: 999px;
+    transition: transform 0.2s, background 0.2s;
+}
+.annie-cta:active { transform: translateY(-1px); background: #FFF3E0; }
 
 /* ===== Sections ===== */
 .section {
