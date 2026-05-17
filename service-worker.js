@@ -8,9 +8,9 @@ const STATIC_ASSETS = [
     '/css/style.css',
     '/js/app.js',
     '/manifest.json',
-    '/icons/favicon.svg',
-    '/icons/icon-72.svg',
-    '/icons/icon-192.svg',
+    '/icons/favicon.png',
+    '/icons/icon-72.png',
+    '/icons/icon-192.png',
     '/data/newsletters/placeholder.html'
 ];
 
