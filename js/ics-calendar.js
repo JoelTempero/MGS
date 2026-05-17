@@ -310,11 +310,33 @@ async function fetchCalendarData(forceRefresh = false) {
 }
 
 /**
- * Get all events (ICS + demo data merged)
+ * KAMAR's days.ics feed (and sometimes school.ics) carries timetable
+ * cycle markers rather than real events — e.g. "Fri A", "Mon B",
+ * "T-2 W-2 Day 5 ()", "Day 5 ()", or an empty "()" title.
+ * These must never surface as calendar events.
+ */
+function isCycleLabel(title) {
+    const t = (title || '').trim();
+    if (!t) return true;                                           // empty title
+    if (/^[()\[\]\s.,;:_-]*$/.test(t)) return true;                // punctuation only, e.g. "()"
+    if (/^(Mon|Tue|Wed|Thu|Fri|Sat|Sun)\s+[A-Z]$/i.test(t)) return true;            // "Fri A"
+    if (/(^|\s)T-?\d+\b/i.test(t) && /(^|\s)W-?\d+\b/i.test(t) && /\bDay\s*\d+/i.test(t)) return true; // "T-2 W-2 Day 5 ()"
+    if (/^Day\s*\d+\s*\(?\s*\)?$/i.test(t)) return true;           // "Day 5", "Day 5 ()"
+    if (/^W(ee)?k?-?\s?\d+\s*\(?\s*\)?$/i.test(t)) return true;    // "W-2", "Wk 2", "Week 2"
+    return false;
+}
+
+function isRealEvent(e) {
+    return !!(e && e.start && !isCycleLabel(e.title));
+}
+
+/**
+ * Get all events (real ICS events; demo data as fallback).
+ * days.ics is excluded — it is timetable cycle metadata, not events.
  */
 function getAllEvents() {
-    // Merge ICS events with demo data
-    const icsEvents = [...calendarCache.events, ...calendarCache.days];
+    // Only real school events. The days feed is timetable cycle labels.
+    const icsEvents = calendarCache.events.filter(isRealEvent);
     
     // Convert ICS events to app format
     const formattedICS = icsEvents.map(e => ({

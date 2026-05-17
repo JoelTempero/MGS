@@ -556,7 +556,9 @@ img {
 /* ===== Hero Section ===== */
 .hero {
     position: relative;
-    background: linear-gradient(145deg, var(--primary-dark) 0%, var(--primary) 60%, var(--primary-light) 100%);
+    background:
+        linear-gradient(180deg, rgba(15,11,7,0.42) 0%, rgba(69,16,16,0.82) 100%),
+        url('../images/home-hero.jpg') center 28% / cover no-repeat;
     color: var(--white);
     padding: var(--space-xl) var(--space-lg);
     overflow: hidden;
