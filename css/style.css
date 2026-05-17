@@ -558,7 +558,7 @@ img {
     position: relative;
     background:
         linear-gradient(180deg, rgba(15,11,7,0.34) 0%, rgba(69,16,16,0.86) 100%),
-        url('../images/home-hero.jpg') 50% 16% / 165% no-repeat;
+        url('../images/home-hero.jpg') 50% calc(16% - 50px) / 165% no-repeat;
     color: var(--white);
     padding: var(--space-xl) var(--space-lg);
     overflow: hidden;
